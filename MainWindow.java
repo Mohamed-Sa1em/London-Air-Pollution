@@ -4,8 +4,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.scene.control.*;
@@ -33,6 +31,31 @@ public class MainWindow extends Application
     @Override
     public void start(Stage stage)
     {
+        
+        
+        
+        BorderPane root = new BorderPane();
+        root.setBorder(new Border(
+        new BorderStroke(
+                Color.BLACK,               // border color
+                BorderStrokeStyle.SOLID,   // line style
+                null,
+                new BorderWidths(3)        // thickness
+            )
+        ));
+        root.setTop(createMenuBar());
+        root.setLeft(createFiltersAndControlsBar());
+
+        // JavaFX must have a Scene (window content) inside a Stage (window)
+        Scene scene = new Scene(root, 1200, 800);
+        stage.setTitle("Air Pollution Monitor");
+        stage.setScene(scene);
+
+        // Show the Stage (window)
+        stage.show();
+    }
+    
+    private HBox createMenuBar() {
         HBox topBar = new HBox(10);
         topBar.setStyle("-fx-border-color: black; -fx-border-width: 0 0 2 0;");
         
@@ -47,33 +70,33 @@ public class MainWindow extends Application
         
         topBar.getChildren().addAll(welcomeWindowButton, dataMapButton, pollutionStatsButton);
         
-        
-        
+        return topBar;
+    }
+    
+    private VBox createFiltersAndControlsBar() {
         VBox filtersBar = new VBox(20);
         filtersBar.setStyle("-fx-border-color: black; -fx-border-width: 0 2 0 0;");
         
         Label filtersAndControlsLabel = new Label ("Filters and Controls");
-        filtersBar.getChildren().addAll(filtersAndControlsLabel);
+        Label selectYearLabel = new Label("Select Year");
         
+        ComboBox<String> yearSelectorComboBox = new ComboBox<>();
+
+        yearSelectorComboBox.getItems().addAll(
+            "2018",
+            "2019",
+            "2020",
+            "2021",
+            "2022",
+            "2023"
+        );
         
-        BorderPane root = new BorderPane();
-        root.setBorder(new Border(
-        new BorderStroke(
-                Color.BLACK,               // border color
-                BorderStrokeStyle.SOLID,   // line style
-                null,
-                new BorderWidths(3)        // thickness
-            )
-        ));
-        root.setTop(topBar);
-        root.setLeft(filtersBar);
-
-        // JavaFX must have a Scene (window content) inside a Stage (window)
-        Scene scene = new Scene(root, 1200, 800);
-        stage.setTitle("Air Pollution Monitor");
-        stage.setScene(scene);
-
-        // Show the Stage (window)
-        stage.show();
+        yearSelectorComboBox.getSelectionModel().selectFirst();
+        
+        Label pollutantSelectionLabel = new Label("Select Pollutant");
+        
+        filtersBar.getChildren().addAll(filtersAndControlsLabel, selectYearLabel, yearSelectorComboBox, pollutantSelectionLabel);
+        
+        return filtersBar;
     }
 }
