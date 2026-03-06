@@ -11,6 +11,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.geometry.Insets;
+import java.awt.event.ActionListener;
 
 /**
  * Write a description of JavaFX class MainWindow here.
@@ -20,7 +21,8 @@ import javafx.geometry.Insets;
  */
 public class MainWindow extends Application
 {
-    private MapController myPollutionMap;
+    private MapController map = new MapController();
+    private WelcomeWindow welcome = new WelcomeWindow();
     /**
      * The start method is the main entry point for every JavaFX application. 
      * It is called after the init() method has returned and after 
@@ -31,66 +33,69 @@ public class MainWindow extends Application
     @Override
     public void start(Stage stage)
     {
-        
-        
-        
         BorderPane root = new BorderPane();
         root.setBorder(new Border(
-        new BorderStroke(
-                Color.BLACK,               // border color
-                BorderStrokeStyle.SOLID,   // line style
-                null,
-                new BorderWidths(3)        // thickness
-            )
-        ));
-        root.setTop(createMenuBar());
+                new BorderStroke(
+                    Color.BLACK,               // border color
+                    BorderStrokeStyle.SOLID,   // line style
+                    null,
+                    new BorderWidths(3)        // thickness
+                )
+            ));
+        root.setTop(createMenuBar(root));
         root.setLeft(createFiltersAndControlsBar());
-        
+
         // JavaFX must have a Scene (window content) inside a Stage (window)
         Scene scene = new Scene(root, 1200, 728);
         stage.setResizable(false); // makes the window non resizeable by the user
         stage.setTitle("Air Pollution Monitor");
         stage.setScene(scene);
-        
-        
+
         root.setCenter(new WelcomeWindow());
         //MapController myPollutionMap = new MapController();
         //root.setCenter(myPollutionMap);
-        
-        
+
 
         // Show the Stage (window)
         stage.show();
     }
-    
-    private HBox createMenuBar() {
+
+    private HBox createMenuBar(BorderPane root) {
         HBox topBar = new HBox(10);
         topBar.setStyle("-fx-border-color: black; -fx-border-width: 0 0 2 0;");
-        
+
         Button welcomeWindowButton = new Button("Welcome");
+        welcomeWindowButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override public void handle(ActionEvent e){
+                    root.setCenter(welcome);
+                }
+            });
         welcomeWindowButton.setFont(new Font(20));
-        
+
         Button dataMapButton = new Button("Data Map");
+        dataMapButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override public void handle(ActionEvent e){
+                    root.setCenter(map);
+                }
+            });
         dataMapButton.setFont(new Font(20));
-        
+
         Button pollutionStatsButton = new Button("Pollution Stats");
         pollutionStatsButton.setFont(new Font(20));
-        
+
         topBar.getChildren().addAll(welcomeWindowButton, dataMapButton, pollutionStatsButton);
-        
+
         return topBar;
     }
-     
-    
-    
+
     
     private VBox createFiltersAndControlsBar() {
         VBox filtersBar = new VBox(20);
         filtersBar.setStyle("-fx-border-color: black; -fx-border-width: 0 2 0 0;");
-        
+
         Label filtersAndControlsLabel = new Label ("Filters and Controls");
         Label selectYearLabel = new Label("Select Year");
-        
+
         ComboBox<String> yearSelectorComboBox = new ComboBox<>();
 
         yearSelectorComboBox.getItems().addAll(
@@ -101,13 +106,13 @@ public class MainWindow extends Application
             "2022",
             "2023"
         );
-        
+
         yearSelectorComboBox.getSelectionModel().selectFirst();
-        
+
         Label pollutantSelectionLabel = new Label("Select Pollutant");
-        
+
         filtersBar.getChildren().addAll(filtersAndControlsLabel, selectYearLabel, yearSelectorComboBox, pollutantSelectionLabel);
-        
+
         return filtersBar;
     }
 }
