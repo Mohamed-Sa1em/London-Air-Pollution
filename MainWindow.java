@@ -43,7 +43,7 @@ public class MainWindow extends Application
                 )
             ));
         root.setTop(createMenuBar(root));
-        root.setLeft(createFiltersAndControlsBar());
+        
 
         // JavaFX must have a Scene (window content) inside a Stage (window)
         Scene scene = new Scene(root, 1200, 728);
@@ -68,6 +68,8 @@ public class MainWindow extends Application
         welcomeWindowButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override public void handle(ActionEvent e){
                     root.setCenter(welcome);
+                    root.setLeft(null);
+                    
                 }
             });
         welcomeWindowButton.setFont(new Font(20));
@@ -76,6 +78,7 @@ public class MainWindow extends Application
         dataMapButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override public void handle(ActionEvent e){
                     root.setCenter(map);
+                    root.setLeft(createFiltersAndControlsBar());
                 }
             });
         dataMapButton.setFont(new Font(20));
