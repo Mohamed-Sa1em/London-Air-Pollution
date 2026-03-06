@@ -20,7 +20,7 @@ import javafx.geometry.Insets;
  */
 public class MainWindow extends Application
 {
-
+    private MapController myPollutionMap;
     /**
      * The start method is the main entry point for every JavaFX application. 
      * It is called after the init() method has returned and after 
@@ -52,8 +52,10 @@ public class MainWindow extends Application
         stage.setTitle("Air Pollution Monitor");
         stage.setScene(scene);
         
-        MapController myPollutionMap = new MapController();
-        root.setCenter(myPollutionMap);
+        
+        root.setCenter(new WelcomeWindow());
+        //MapController myPollutionMap = new MapController();
+        //root.setCenter(myPollutionMap);
         
         
 
@@ -78,6 +80,9 @@ public class MainWindow extends Application
         
         return topBar;
     }
+     
+    
+    
     
     private VBox createFiltersAndControlsBar() {
         VBox filtersBar = new VBox(20);
