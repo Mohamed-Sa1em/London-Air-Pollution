@@ -1,4 +1,3 @@
-
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -23,6 +22,8 @@ public class MainWindow extends Application
 {
     private MapController map = new MapController();
     private WelcomeWindow welcome = new WelcomeWindow();
+    private StatsWindow stats = new StatsWindow();
+    
     /**
      * The start method is the main entry point for every JavaFX application. 
      * It is called after the init() method has returned and after 
@@ -64,28 +65,33 @@ public class MainWindow extends Application
 
         Button welcomeWindowButton = new Button("Welcome");
         welcomeWindowButton.setOnAction(new EventHandler<ActionEvent>() {
-                @Override public void handle(ActionEvent e){
+            @Override public void handle(ActionEvent e){
                     root.setCenter(welcome);
                     root.setLeft(null);
-
-                }
-            });
+            }
+        });
         welcomeWindowButton.setFont(new Font(20));
 
         Button dataMapButton = new Button("Data Map");
         dataMapButton.setOnAction(new EventHandler<ActionEvent>() {
-                @Override public void handle(ActionEvent e){
+            @Override public void handle(ActionEvent e){
                     root.setCenter(map);
                     root.setLeft(createFiltersAndControlsBar());
                     DataLoader myLoader = new DataLoader();
                     DataSet no2Data = myLoader.loadDataFile("UKAirPollutionData/NO2/mapno22023.csv");
                     map.plotData(no2Data);
 
-                }
-            });
+            }
+        });
         dataMapButton.setFont(new Font(20));
 
         Button pollutionStatsButton = new Button("Pollution Stats");
+        pollutionStatsButton.setOnAction(new EventHandler<ActionEvent>(){
+            @Override public void handle(ActionEvent e) {
+                root.setCenter(stats);
+                root.setLeft(null);
+            }            
+        });
         pollutionStatsButton.setFont(new Font(20));
 
         topBar.getChildren().addAll(welcomeWindowButton, dataMapButton, pollutionStatsButton);

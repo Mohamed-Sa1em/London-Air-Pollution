@@ -21,27 +21,17 @@ public class WelcomeWindow extends VBox
 {
     public WelcomeWindow()
     {
-    
-        
         //super(root,width,height);
         Label titleLabel = new Label("Welcome to the London Air ppp");
         titleLabel.setFont(Font.font("Arial",FontWeight.BOLD,26));
         
         Label instructionLabel = new Label(
-        "This is a quick guide to show you how to use the app"
-        
-        
-        );
-        
-        
+        "This is a quick guide to show you how to use the app");
         
         instructionLabel.setFont(Font.font("Arial",40));
         
         this.getChildren().addAll(titleLabel,instructionLabel);
 
-    
-    
-    
     
     }
     
