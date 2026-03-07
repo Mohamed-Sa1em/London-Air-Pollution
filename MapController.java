@@ -5,6 +5,9 @@ import javafx.scene.shape.Circle;
 import javafx.scene.paint.Color;
 import javafx.scene.control.*;
 import javafx.util.Duration;
+import java.util.List;
+import java.util.ArrayList;
+
 /**
  * MapController class is soley responsibly for rendering the map of london so far.
  * Eventually it will act as a canvas where we "allocate" and display the pollution data points 
@@ -48,20 +51,32 @@ public class MapController extends Pane
         final double Max_Northing = 193305;
         final double Min_Northing = 168504;
 
-        final double RangeX = Max_Easting - Min_Easting ;
-        final double RangeY = Max_Northing - Min_Northing ;
+        final double RangeX = Max_Easting - Min_Easting;
+        final double RangeY = Max_Northing - Min_Northing;
+        
+        List<DataPoint> dataPoints = data.getData();
+        List<DataPoint> relevantDataPoints = returnRelevantData(dataPoints, Min_Easting, Max_Easting, Min_Northing, Max_Northing);
+        double maxPollutionForThisData = returnMaxLevelOfPollution(relevantDataPoints);
+        double meanPollutionForThisData = getMeanPollutionValueForData(relevantDataPoints);
+        
+        String currentPollutant = data.getPollutant();
+        
+        PollutantThreshold thresholds = PollutantThreshold.fromString(currentPollutant);
+        thresholds.setGreenMax(meanPollutionForThisData * 0.8);
+        thresholds.setYellowMax(meanPollutionForThisData);
+        thresholds.setOrangeMax(meanPollutionForThisData * 1.2);
+        
+        
         this.getChildren().removeIf(node -> node instanceof Circle);
-        for(DataPoint dp : data.getData()){
+        for(DataPoint dp : dataPoints){
 
             double This_Easting = dp.x();
             double This_Northing = dp.y();
             double This_Value= dp.value();
-
-            String currentPollutant = data.getPollutant(); 
-            PollutantThreshold thresholds = PollutantThreshold.fromString(currentPollutant);
             
             if (This_Easting >= Min_Easting && This_Easting <= Max_Easting &&
-            This_Northing >= Min_Northing && This_Northing <= Max_Northing){
+                This_Northing >= Min_Northing && This_Northing <= Max_Northing
+                ){
                 double translated_X = (((This_Easting - Min_Easting)/RangeX)* mapBackground.getBoundsInLocal().getWidth());
 
                 double translated_Y = (((Max_Northing - This_Northing)/RangeY)* mapBackground.getBoundsInLocal().getHeight());
@@ -102,6 +117,44 @@ public class MapController extends Pane
         }
 
     
+    }
+    
+    private double returnMaxLevelOfPollution(List<DataPoint> dataPoints) {
+        double max = 0;
+        for (DataPoint dataPoint: dataPoints) {
+            if (max < dataPoint.value()) {
+                max = dataPoint.value();
+            }
+        }
+        
+        return max;
+    }
+    
+    private double getMeanPollutionValueForData(List<DataPoint> dataPoints) {
+        double sum = 0;
+        for (DataPoint dataPoint: dataPoints) {
+            sum += dataPoint.value();
+        }
+        
+        return sum / dataPoints.size();
+    }
+    
+    private List<DataPoint> returnRelevantData(
+        List<DataPoint> dataPoints, double MinEasting, double MaxEasting, double MinNorthing, double MaxNorthing
+        ) {
+        ArrayList<DataPoint> relevantDataPoints = new ArrayList<DataPoint>();
+        for (DataPoint dataPoint: dataPoints) {
+            double This_Easting = dataPoint.x();
+            double This_Northing = dataPoint.y();
+            if (This_Easting >= MinEasting && This_Easting <= MaxEasting &&
+                This_Northing >= MinNorthing && This_Northing <= MaxNorthing
+            ) {
+                
+                relevantDataPoints.add(dataPoint);
+            }
+        }
+        
+        return relevantDataPoints;
     }
 
 }

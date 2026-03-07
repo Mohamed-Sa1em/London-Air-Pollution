@@ -157,7 +157,7 @@ public class MainWindow extends Application
         
         String suffix = "";
         if (filePrefix.contains("pm")) {
-        suffix = "g";
+            suffix = "g";
         }
         String filePath = "UKAirPollutionData/" + folderName + "/map" + filePrefix + year + suffix + ".csv";
 

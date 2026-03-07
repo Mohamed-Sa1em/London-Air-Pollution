@@ -8,14 +8,14 @@
 public enum PollutantThreshold
 {
     //inital values up for change
-    //pm25 values is not right  as they are all green rn  for later years 
-    NO2(15.0, 19.5, 25.0),
-    PM10(15.0, 18.0, 22.0),   
-    PM25(11.0, 12.0, 13.0);
+    //pm25 values is not right  as they are all green rn for later years 
+    NO2(0, 0, 0),
+    PM10(0, 0, 0),   
+    PM25(0, 0, 0);
     
-    private final double greenMax;
-    private final double yellowMax;
-    private final double orangeMax;
+    private double greenMax;
+    private double yellowMax;
+    private double orangeMax;
 
     // Constructor for the Enum
     PollutantThreshold(double greenMax, double yellowMax, double orangeMax) {
@@ -25,8 +25,13 @@ public enum PollutantThreshold
     }
 
     public double getGreenMax() { return greenMax; }
+    public void setGreenMax(double newGreenMax) { this.greenMax = newGreenMax;}
+    
     public double getYellowMax() { return yellowMax; }
+    public void setYellowMax(double newYellowMax) { this.yellowMax = newYellowMax;}
+    
     public double getOrangeMax() { return orangeMax; }
+    public void setOrangeMax(double newOrangeMax) { this.orangeMax = newOrangeMax;}
     
     /**
      * Helper method to easily convert the String from the CSV file into this Enum
