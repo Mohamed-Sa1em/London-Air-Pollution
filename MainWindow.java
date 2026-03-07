@@ -43,7 +43,6 @@ public class MainWindow extends Application
                 )
             ));
         root.setTop(createMenuBar(root));
-        
 
         // JavaFX must have a Scene (window content) inside a Stage (window)
         Scene scene = new Scene(root, 1200, 728);
@@ -54,7 +53,6 @@ public class MainWindow extends Application
         root.setCenter(new WelcomeWindow());
         //MapController myPollutionMap = new MapController();
         //root.setCenter(myPollutionMap);
-
 
         // Show the Stage (window)
         stage.show();
@@ -69,7 +67,7 @@ public class MainWindow extends Application
                 @Override public void handle(ActionEvent e){
                     root.setCenter(welcome);
                     root.setLeft(null);
-                    
+
                 }
             });
         welcomeWindowButton.setFont(new Font(20));
@@ -79,6 +77,10 @@ public class MainWindow extends Application
                 @Override public void handle(ActionEvent e){
                     root.setCenter(map);
                     root.setLeft(createFiltersAndControlsBar());
+                    DataLoader myLoader = new DataLoader();
+                    DataSet no2Data = myLoader.loadDataFile("UKAirPollutionData/NO2/mapno22023.csv");
+                    map.plotData(no2Data);
+
                 }
             });
         dataMapButton.setFont(new Font(20));
@@ -91,7 +93,6 @@ public class MainWindow extends Application
         return topBar;
     }
 
-    
     private VBox createFiltersAndControlsBar() {
         VBox filtersBar = new VBox(20);
         filtersBar.setStyle("-fx-border-color: black; -fx-border-width: 0 2 0 0;");
@@ -112,10 +113,61 @@ public class MainWindow extends Application
 
         yearSelectorComboBox.getSelectionModel().selectFirst();
 
+
         Label pollutantSelectionLabel = new Label("Select Pollutant");
 
-        filtersBar.getChildren().addAll(filtersAndControlsLabel, selectYearLabel, yearSelectorComboBox, pollutantSelectionLabel);
+        ComboBox<String>  pollutantSelectorComboBox = new ComboBox<>();
+
+        pollutantSelectorComboBox.getItems().addAll(
+            "NO2",
+            "pm2.5",
+            "pm10"
+
+        );
+
+
+        pollutantSelectorComboBox.getSelectionModel().selectFirst();
+
+        //Handles the change of the year and the pollutant
+        //Loading the new dataset
+
+        yearSelectorComboBox.setOnAction(event -> {
+                    String selectedYear = yearSelectorComboBox.getValue();
+                    String currentPollutant = pollutantSelectorComboBox.getValue(); 
+                    updateMapData(currentPollutant, selectedYear);});
+
+        pollutantSelectorComboBox.setOnAction(event -> {
+                    String selectedpollutant = pollutantSelectorComboBox.getValue();
+                    String currentYear = yearSelectorComboBox.getValue();
+                    updateMapData(selectedpollutant,currentYear);});
+
+
+        filtersBar.getChildren().addAll(filtersAndControlsLabel, selectYearLabel, yearSelectorComboBox, pollutantSelectionLabel, pollutantSelectorComboBox);
 
         return filtersBar;
+    }
+
+    /**
+     * Helper methood that get both the pollutant and the year
+     * Then updates the map 
+     */
+    private void updateMapData(String pollutant, String year) {
+        String folderName = pollutant.toUpperCase();
+        String filePrefix = pollutant.replace(".", "").toLowerCase();
+        
+        String suffix = "";
+        if (filePrefix.contains("pm")) {
+        suffix = "g";
+        }
+        String filePath = "UKAirPollutionData/" + folderName + "/map" + filePrefix + year + suffix + ".csv";
+
+        DataLoader myLoader = new DataLoader();
+        DataSet newData = myLoader.loadDataFile(filePath);
+
+        if (newData != null) {
+            map.plotData(newData);
+        } else {
+            System.out.println("Error: Could not find file " + filePath);
+        }
     }
 }

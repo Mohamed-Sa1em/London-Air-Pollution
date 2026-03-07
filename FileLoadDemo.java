@@ -25,5 +25,6 @@ public class FileLoadDemo
         
         DataSet dataSet = loader.loadDataFile("UKAirPollutionData/NO2/mapno22023.csv");
         System.out.println(dataSet);
+        
     }
 }
