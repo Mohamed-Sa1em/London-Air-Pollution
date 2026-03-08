@@ -1,7 +1,7 @@
 import javafx.scene.layout.Pane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.shape.Circle;
+import javafx.scene.shape.*;
 import javafx.scene.paint.Color;
 import javafx.scene.control.*;
 import javafx.util.Duration;
@@ -62,12 +62,12 @@ public class MapController extends Pane
         String currentPollutant = data.getPollutant();
         
         PollutantThreshold thresholds = PollutantThreshold.fromString(currentPollutant);
-        thresholds.setGreenMax(meanPollutionForThisData * 0.8);
+        thresholds.setGreenMax(meanPollutionForThisData * 0.9);
         thresholds.setYellowMax(meanPollutionForThisData);
-        thresholds.setOrangeMax(meanPollutionForThisData * 1.2);
+        thresholds.setOrangeMax(meanPollutionForThisData * 1.1);
         
         
-        this.getChildren().removeIf(node -> node instanceof Circle);
+        this.getChildren().removeIf(node -> node instanceof Rectangle);
         for(DataPoint dp : dataPoints){
 
             double This_Easting = dp.x();
@@ -81,7 +81,7 @@ public class MapController extends Pane
 
                 double translated_Y = (((Max_Northing - This_Northing)/RangeY)* mapBackground.getBoundsInLocal().getHeight());
 
-                Circle marker = new Circle(translated_X,translated_Y,3);
+                Rectangle marker = new Rectangle(translated_X,translated_Y, 26.5, 26.5);
                 if (This_Value < thresholds.getGreenMax()) {
                     marker.setFill(Color.GREEN);
                 } else if (This_Value < thresholds.getYellowMax()) {
@@ -91,7 +91,7 @@ public class MapController extends Pane
                 } else {
                     marker.setFill(Color.RED);
                 }
-                marker.setOpacity(0.6);
+                marker.setOpacity(0.1);
                 
                 //Hovering and value formatting
                 String labelText = String.format(currentPollutant +" Level: %.2f", This_Value); 
@@ -101,14 +101,14 @@ public class MapController extends Pane
                 Tooltip.install(marker, infoPopup);
 
                 marker.setOnMouseEntered(event -> {
-                            marker.setRadius(7);     
-                            marker.setOpacity(1.0);    
+                            //marker.setRadius(7);     
+                            marker.setOpacity(0.5);    
                             marker.toFront();          
                     });
 
                 marker.setOnMouseExited(event -> {
-                            marker.setRadius(3);      
-                            marker.setOpacity(0.6);    
+                            //marker.setRadius(3);      
+                            marker.setOpacity(0.1);    
                     });
 
                 this.getChildren().add(marker);
@@ -149,7 +149,6 @@ public class MapController extends Pane
             if (This_Easting >= MinEasting && This_Easting <= MaxEasting &&
                 This_Northing >= MinNorthing && This_Northing <= MaxNorthing
             ) {
-                
                 relevantDataPoints.add(dataPoint);
             }
         }

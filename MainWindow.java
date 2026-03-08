@@ -176,4 +176,5 @@ public class MainWindow extends Application
             System.out.println("Error: Could not find file " + filePath);
         }
     }
+    
 }

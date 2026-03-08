@@ -33,4 +33,8 @@ public class StatsWindow extends VBox
 
     
     }
+    
+    public double highestRecordedPollution(DataSet Data) {
+        return 0;
+    }
 }
