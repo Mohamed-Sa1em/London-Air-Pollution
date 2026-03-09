@@ -1,0 +1,17 @@
+
+.nav-bar {
+    -fx-border-color: black;
+    -fx-border-width: 0 0 2 0;
+    -fx-spacing: 5;
+    -fx-alignment: center-left;
+    -fx-background-color: #4c7546;
+    -fx-padding: 5 10 5 10;
+}
+
+.filters {
+    -fx-border-color: black; 
+    -fx-border-width: 0 2 0 0;
+    -fx-alignment: center-top;
+    -fx-background-color: #fff1eb;
+    -fx-padding: 5 10 5 10;
+}
