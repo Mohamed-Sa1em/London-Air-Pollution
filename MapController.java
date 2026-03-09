@@ -66,7 +66,6 @@ public class MapController extends Pane
         thresholds.setYellowMax(meanPollutionForThisData);
         thresholds.setOrangeMax(meanPollutionForThisData * 1.1);
         
-        
         this.getChildren().removeIf(node -> node instanceof Rectangle);
         for(DataPoint dp : dataPoints){
 
@@ -91,10 +90,10 @@ public class MapController extends Pane
                 } else {
                     marker.setFill(Color.RED);
                 }
-                marker.setOpacity(0.1);
+                marker.setOpacity(0.15);
                 
                 //Hovering and value formatting
-                String labelText = String.format(currentPollutant +" Level: %.2f", This_Value); 
+                String labelText = String.format("Grid Code: " + dp.gridCode() + "\nx: " + dp.x() + "\ny: " + dp.y() + "\n" + currentPollutant + " Level: %.2f", This_Value); 
                 Tooltip infoPopup = new Tooltip(labelText);
                 infoPopup.setShowDelay(Duration.ZERO);
                 
@@ -104,12 +103,12 @@ public class MapController extends Pane
                             //marker.setRadius(7);     
                             marker.setOpacity(0.5);    
                             marker.toFront();          
-                    });
+                });
 
                 marker.setOnMouseExited(event -> {
                             //marker.setRadius(3);      
                             marker.setOpacity(0.1);    
-                    });
+                });
 
                 this.getChildren().add(marker);
             }
