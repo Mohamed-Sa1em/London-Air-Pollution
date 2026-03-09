@@ -73,6 +73,8 @@ public class MapController extends Pane
             double This_Northing = dp.y();
             double This_Value= dp.value();
             
+            double baseOpacity = 0.15;
+            
             if (This_Easting >= Min_Easting && This_Easting <= Max_Easting &&
                 This_Northing >= Min_Northing && This_Northing <= Max_Northing
                 ){
@@ -82,15 +84,15 @@ public class MapController extends Pane
 
                 Rectangle marker = new Rectangle(translated_X,translated_Y, 26.5, 26.5);
                 if (This_Value < thresholds.getGreenMax()) {
-                    marker.setFill(Color.GREEN);
+                    marker.setFill(Color.GREEN.darker());
                 } else if (This_Value < thresholds.getYellowMax()) {
                     marker.setFill(Color.YELLOW);
                 } else if (This_Value < thresholds.getOrangeMax()) {
-                    marker.setFill(Color.ORANGE);
+                    marker.setFill(Color.DARKORANGE);
                 } else {
-                    marker.setFill(Color.RED);
+                    marker.setFill(Color.CRIMSON);
                 }
-                marker.setOpacity(0.15);
+                marker.setOpacity(baseOpacity);
                 
                 //Hovering and value formatting
                 String labelText = String.format("Grid Code: " + dp.gridCode() + "\nx: " + dp.x() + "\ny: " + dp.y() + "\n" + currentPollutant + " Level: %.2f", This_Value); 
@@ -107,7 +109,7 @@ public class MapController extends Pane
 
                 marker.setOnMouseExited(event -> {
                             //marker.setRadius(3);      
-                            marker.setOpacity(0.1);    
+                            marker.setOpacity(baseOpacity);    
                 });
 
                 this.getChildren().add(marker);
