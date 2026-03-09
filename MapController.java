@@ -67,7 +67,7 @@ public class MapController extends Pane
         thresholds.setOrangeMax(meanPollutionForThisData * 1.1);
         
         this.getChildren().removeIf(node -> node instanceof Rectangle);
-        for(DataPoint dp : dataPoints){
+        for(DataPoint dp : relevantDataPoints){
 
             double This_Easting = dp.x();
             double This_Northing = dp.y();
@@ -75,49 +75,69 @@ public class MapController extends Pane
             
             double baseOpacity = 0.15;
             
-            if (This_Easting >= Min_Easting && This_Easting <= Max_Easting &&
-                This_Northing >= Min_Northing && This_Northing <= Max_Northing
-                ){
-                double translated_X = (((This_Easting - Min_Easting)/RangeX)* mapBackground.getBoundsInLocal().getWidth());
+            double translated_X = (((This_Easting - Min_Easting)/RangeX)* mapBackground.getBoundsInLocal().getWidth());
 
-                double translated_Y = (((Max_Northing - This_Northing)/RangeY)* mapBackground.getBoundsInLocal().getHeight());
+            double translated_Y = (((Max_Northing - This_Northing)/RangeY)* mapBackground.getBoundsInLocal().getHeight());
 
-                Rectangle marker = new Rectangle(translated_X,translated_Y, 26.5, 26.5);
-                if (This_Value < thresholds.getGreenMax()) {
-                    marker.setFill(Color.GREEN.darker());
-                } else if (This_Value < thresholds.getYellowMax()) {
-                    marker.setFill(Color.YELLOW);
-                } else if (This_Value < thresholds.getOrangeMax()) {
-                    marker.setFill(Color.DARKORANGE);
-                } else {
-                    marker.setFill(Color.CRIMSON);
-                }
-                marker.setOpacity(baseOpacity);
-                
-                //Hovering and value formatting
-                String labelText = String.format("Grid Code: " + dp.gridCode() + "\nx: " + dp.x() + "\ny: " + dp.y() + "\n" + currentPollutant + " Level: %.2f", This_Value); 
-                Tooltip infoPopup = new Tooltip(labelText);
-                infoPopup.setShowDelay(Duration.ZERO);
-                
-                Tooltip.install(marker, infoPopup);
-
-                marker.setOnMouseEntered(event -> {
-                            //marker.setRadius(7);     
-                            marker.setOpacity(0.5);    
-                            marker.toFront();          
-                });
-
-                marker.setOnMouseExited(event -> {
-                            //marker.setRadius(3);      
-                            marker.setOpacity(baseOpacity);    
-                });
-
-                this.getChildren().add(marker);
+            Rectangle marker = new Rectangle(translated_X,translated_Y, 26.5, 26.5);
+            if (This_Value < thresholds.getGreenMax()) {
+                marker.setFill(Color.GREEN.darker());
+            } else if (This_Value < thresholds.getYellowMax()) {
+                marker.setFill(Color.YELLOW);
+            } else if (This_Value < thresholds.getOrangeMax()) {
+                marker.setFill(Color.DARKORANGE);
+            } else {
+                marker.setFill(Color.CRIMSON);
             }
+            marker.setOpacity(baseOpacity);
+                
+            //Hovering and value formatting
+            String labelText = String.format("Grid Code: " + dp.gridCode() + "\nx: " + dp.x() + "\ny: " + dp.y() + "\n" + currentPollutant + " Level: %.2f", This_Value); 
+            Tooltip infoPopup = new Tooltip(labelText);
+            infoPopup.setShowDelay(Duration.ZERO);
+                
+            Tooltip.install(marker, infoPopup);
+
+            marker.setOnMouseEntered(event -> {
+                    //marker.setRadius(7);     
+                    marker.setOpacity(0.5);    
+                    marker.toFront();          
+            });
+
+            marker.setOnMouseExited(event -> {
+                    //marker.setRadius(3);      
+                    marker.setOpacity(baseOpacity);    
+            });
+
+            this.getChildren().add(marker);
+        
 
         }
-
     
+    }
+    
+    /**
+     * Helper methood that get both the pollutant and the year
+     * Then updates the map 
+     */
+    public void updateMapData(String pollutant, String year) {
+        String folderName = pollutant.toUpperCase();
+        String filePrefix = pollutant.replace(".", "").toLowerCase();
+        
+        String suffix = "";
+        if (filePrefix.contains("pm")) {
+            suffix = "g";
+        }
+        String filePath = "UKAirPollutionData/" + folderName + "/map" + filePrefix + year + suffix + ".csv";
+
+        DataLoader myLoader = new DataLoader();
+        DataSet newData = myLoader.loadDataFile(filePath);
+
+        if (newData != null) {
+            this.plotData(newData);
+        } else {
+            System.out.println("Error: Could not find file " + filePath);
+        }
     }
     
     private double returnMaxLevelOfPollution(List<DataPoint> dataPoints) {

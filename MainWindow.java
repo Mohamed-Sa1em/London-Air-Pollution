@@ -64,34 +64,15 @@ public class MainWindow extends Application
         topBar.setStyle("-fx-border-color: black; -fx-border-width: 0 0 2 0;");
 
         Button welcomeWindowButton = new Button("Welcome");
-        welcomeWindowButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e){
-                    root.setCenter(welcome);
-                    root.setLeft(null);
-            }
-        });
+        welcomeWindowButton.setOnAction(event -> {welcomeButtonPressed(event, root);});
         welcomeWindowButton.setFont(new Font(20));
 
         Button dataMapButton = new Button("Data Map");
-        dataMapButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e){
-                    root.setCenter(map);
-                    root.setLeft(createFiltersAndControlsBar());
-                    DataLoader myLoader = new DataLoader();
-                    DataSet no2Data = myLoader.loadDataFile("UKAirPollutionData/NO2/mapno22023.csv");
-                    map.plotData(no2Data);
-
-            }
-        });
+        dataMapButton.setOnAction(event -> {dataMapButtonPressed(event, root);});
         dataMapButton.setFont(new Font(20));
 
         Button pollutionStatsButton = new Button("Pollution Stats");
-        pollutionStatsButton.setOnAction(new EventHandler<ActionEvent>(){
-            @Override public void handle(ActionEvent e) {
-                root.setCenter(stats);
-                root.setLeft(null);
-            }            
-        });
+        pollutionStatsButton.setOnAction(event -> {statsButtonPressed(event, root);});
         pollutionStatsButton.setFont(new Font(20));
 
         topBar.getChildren().addAll(welcomeWindowButton, dataMapButton, pollutionStatsButton);
@@ -137,44 +118,38 @@ public class MainWindow extends Application
         //Handles the change of the year and the pollutant
         //Loading the new dataset
 
-        yearSelectorComboBox.setOnAction(event -> {
-                    String selectedYear = yearSelectorComboBox.getValue();
-                    String currentPollutant = pollutantSelectorComboBox.getValue(); 
-                    updateMapData(currentPollutant, selectedYear);});
+        yearSelectorComboBox.setOnAction(event -> {comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox);});
 
-        pollutantSelectorComboBox.setOnAction(event -> {
-                    String selectedpollutant = pollutantSelectorComboBox.getValue();
-                    String currentYear = yearSelectorComboBox.getValue();
-                    updateMapData(selectedpollutant,currentYear);});
-
+        pollutantSelectorComboBox.setOnAction(event -> {comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox);});
 
         filtersBar.getChildren().addAll(filtersAndControlsLabel, selectYearLabel, yearSelectorComboBox, pollutantSelectionLabel, pollutantSelectorComboBox);
 
         return filtersBar;
     }
-
-    /**
-     * Helper methood that get both the pollutant and the year
-     * Then updates the map 
-     */
-    private void updateMapData(String pollutant, String year) {
-        String folderName = pollutant.toUpperCase();
-        String filePrefix = pollutant.replace(".", "").toLowerCase();
-        
-        String suffix = "";
-        if (filePrefix.contains("pm")) {
-            suffix = "g";
-        }
-        String filePath = "UKAirPollutionData/" + folderName + "/map" + filePrefix + year + suffix + ".csv";
-
-        DataLoader myLoader = new DataLoader();
-        DataSet newData = myLoader.loadDataFile(filePath);
-
-        if (newData != null) {
-            map.plotData(newData);
-        } else {
-            System.out.println("Error: Could not find file " + filePath);
-        }
+    
+    
+    private void welcomeButtonPressed(ActionEvent event, BorderPane root) {
+        root.setCenter(welcome);
+        root.setLeft(null);
     }
     
+    private void dataMapButtonPressed(ActionEvent event, BorderPane root) {
+        root.setCenter(map);
+        root.setLeft(createFiltersAndControlsBar());
+        DataLoader myLoader = new DataLoader();
+        DataSet no2Data = myLoader.loadDataFile("UKAirPollutionData/NO2/mapno22023.csv");
+        map.plotData(no2Data);
+    }
+    
+    private void statsButtonPressed(ActionEvent event, BorderPane root) {
+        root.setCenter(stats);
+        root.setLeft(null);
+    }
+    
+    private void comboBoxSelection(ComboBox<String> yearSelectorComboBox, ComboBox<String> pollutantSelectorComboBox) {
+        String selectedpollutant = pollutantSelectorComboBox.getValue();
+        String selectedYear = yearSelectorComboBox.getValue();
+        map.updateMapData(selectedpollutant, selectedYear);
+    
+    }
 }
