@@ -95,7 +95,7 @@ public class MainWindow extends Application
         return topBar;
     }
 
-    public VBox createFiltersAndControlsBar() {
+    private VBox createFiltersAndControlsBar() {
         VBox filtersBar = new VBox(20);
         filtersBar.getStyleClass().add("filters");
 
