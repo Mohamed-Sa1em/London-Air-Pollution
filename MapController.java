@@ -142,6 +142,23 @@ public class MapController extends Pane
         }
     }
     
+    /**
+     * Used to show the highest level for a selected pollutant
+     */
+    public void showHighestPollutant(String year, String pollutant) {
+        DataSet data = getDataForYearAndPollutant(pollutant, year);
+        
+        List<DataPoint> dataPoints = data.getData();
+        List<DataPoint> relevantDataPoints = returnRelevantData(dataPoints, Min_Easting, Max_Easting, Min_Northing, Max_Northing);
+        double maxValue = returnMaxLevelOfPollution(relevantDataPoints);
+        DataPoint location = getLocationOfMaxValue(relevantDataPoints);
+        
+        showMaxOnMap(maxValue, location, pollutant, year);
+    }
+    
+    /**
+     * @return maximum pollution value
+     */
     private double returnMaxLevelOfPollution(List<DataPoint> dataPoints) {
         double max = 0;
         for (DataPoint dataPoint: dataPoints) {
@@ -153,6 +170,9 @@ public class MapController extends Pane
         return max;
     }
     
+    /**
+     * @return DataPoint of the max pollutant value
+     */
     private DataPoint getLocationOfMaxValue(List<DataPoint> dataPoints) {
         double max = 0;
         DataPoint loc = null;
@@ -166,6 +186,9 @@ public class MapController extends Pane
         return loc;
     }
     
+    /**
+     * @return mean of the data
+     */
     private double getMeanPollutionValueForData(List<DataPoint> dataPoints) {
         double sum = 0;
         for (DataPoint dataPoint: dataPoints) {
@@ -175,6 +198,10 @@ public class MapController extends Pane
         return sum / dataPoints.size();
     }
     
+    /**
+     * Returns the data points that are relevant to a certain area
+     * @return list of all the relevant data points
+     */
     private List<DataPoint> returnRelevantData(
         List<DataPoint> dataPoints, double MinEasting, double MaxEasting, double MinNorthing, double MaxNorthing
         ) {
@@ -191,19 +218,10 @@ public class MapController extends Pane
         
         return relevantDataPoints;
     }
-
-    public void showHighestPollutant(String year, String pollutant) {
-        DataSet data = getDataForYearAndPollutant(pollutant, year);
-        
-        List<DataPoint> dataPoints = data.getData();
-        List<DataPoint> relevantDataPoints = returnRelevantData(dataPoints, Min_Easting, Max_Easting, Min_Northing, Max_Northing);
-        double maxValue = returnMaxLevelOfPollution(relevantDataPoints);
-        DataPoint location = getLocationOfMaxValue(relevantDataPoints);
-        
-        System.out.println("Now, drawing map?");
-        showMaxOnMap(maxValue, location, pollutant, year);
-    }
     
+    /**
+     * Adds the marker for the highest pollutant level on the map
+     */
     private void showMaxOnMap(double maxValue, DataPoint dp, String currentPollutant, String year) {
         this.getChildren().removeIf(node -> node instanceof Rectangle);
         
@@ -242,6 +260,9 @@ public class MapController extends Pane
         this.getChildren().add(marker);
     }
     
+    /**
+     * Returns the dataset of a selected year and pollutant
+     */
     private DataSet getDataForYearAndPollutant(String pollutant, String year) {
         String folderName = pollutant.toUpperCase();
         String filePrefix = pollutant.replace(".", "").toLowerCase();
