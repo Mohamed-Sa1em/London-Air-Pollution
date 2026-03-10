@@ -13,7 +13,7 @@ import javafx.scene.text.*;
  * Write a description of JavaFX class StatsWindow here.
  *
  * @author (your name)
- * @version (a version number or a date)
+ * @version 1.0
  */
 public class StatsWindow extends BorderPane
 {
@@ -114,7 +114,31 @@ public class StatsWindow extends BorderPane
     }
     
     private void trendOverTimeScreen(ActionEvent event) {
-        return;
+        VBox root = new VBox(100);
+        root.setAlignment(Pos.CENTER);
+        
+        Label titleLabel = new Label("Select the Pollutant");
+        titleLabel.setFont(Font.font("Arial",FontWeight.BOLD, 20));
+        
+        HBox pollutantBar = new HBox(75);
+        pollutantBar.setAlignment(Pos.CENTER);
+        
+        Button no2 = new Button("NO2");
+        no2.setOnAction(this::drawNO2Graph);
+        
+        Button pm25 = new Button("PM2.5");
+        pm25.setOnAction(this::drawPM25Graph);
+        
+        Button pm10 = new Button("PM10");
+        pm10.setOnAction(this::drawPM10Graph);
+        
+        Button allThree = new Button("All 3 together");
+        allThree.setOnAction(this::drawAllThreeGraph);
+        
+        pollutantBar.getChildren().addAll(no2, pm25, pm10, allThree);
+        
+        root.getChildren().addAll(titleLabel, pollutantBar);
+        this.setCenter(root);
     }
     
     private void displayMap(ComboBox<String> pollutant, ComboBox<String> year) {
@@ -123,5 +147,25 @@ public class StatsWindow extends BorderPane
         
         this.setCenter(map);
         map.showHighestPollutant(selectedYear, selectedPollutant);
+    }
+    
+    private void drawNO2Graph(ActionEvent event) {
+        Graph graph = new Graph("NO2");
+        this.setCenter(graph.returnLineChart());
+    }
+    
+    private void drawPM25Graph(ActionEvent event) {
+        Graph graph = new Graph("PM2.5");
+        this.setCenter(graph.returnLineChart());
+    }
+
+    private void drawPM10Graph(ActionEvent event) {
+        Graph graph = new Graph("PM10");
+        this.setCenter(graph.returnLineChart());
+    }
+    
+    private void drawAllThreeGraph(ActionEvent event) {
+        Graph graph = new Graph("NO2", "PM2.5", "PM10");
+        this.setCenter(graph.returnLineChart());
     }
 }
