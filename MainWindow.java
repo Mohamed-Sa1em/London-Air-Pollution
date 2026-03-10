@@ -12,7 +12,6 @@ import javafx.scene.image.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.geometry.Insets;
-import java.awt.event.ActionListener;
 
 /**
  * Write a description of JavaFX class MainWindow here.
@@ -77,18 +76,15 @@ public class MainWindow extends Application
         
         Button welcomeWindowButton = new Button("Welcome");
         welcomeWindowButton.setOnAction(event -> {welcomeButtonPressed(event, root);});
-        welcomeWindowButton.setFont(new Font(20));
-        welcomeWindowButton.setMinWidth(welcomeWindowButton.getPrefWidth());
+        welcomeWindowButton.getStyleClass().add("nav-bar-button");
 
         Button dataMapButton = new Button("Data Map");
         dataMapButton.setOnAction(event -> {dataMapButtonPressed(event, root);});
-        dataMapButton.setFont(new Font(20));
-        dataMapButton.setMinWidth(dataMapButton.getPrefWidth());
+        dataMapButton.getStyleClass().add("nav-bar-button");
 
         Button pollutionStatsButton = new Button("Pollution Stats");
         pollutionStatsButton.setOnAction(event -> {statsButtonPressed(event, root);});
-        pollutionStatsButton.setFont(new Font(20));
-        pollutionStatsButton.setMinWidth(pollutionStatsButton.getPrefWidth());
+        pollutionStatsButton.getStyleClass().add("nav-bar-button");
 
         topBar.getChildren().addAll(imageView, spacing, welcomeWindowButton, dataMapButton, pollutionStatsButton);
 

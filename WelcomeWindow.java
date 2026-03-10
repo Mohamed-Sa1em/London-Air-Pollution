@@ -9,6 +9,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
+import javafx.scene.control.*;
 
 
 /**
@@ -22,19 +23,19 @@ public class WelcomeWindow extends VBox
     public WelcomeWindow()
     {
         //super(root,width,height);
-        Label titleLabel = new Label("Welcome to the London Air ppp");
-        titleLabel.setFont(Font.font("Arial",FontWeight.BOLD,26));
+        this.getStyleClass().add("welcome-contents");
+        ScrollPane welcomeScroll = new ScrollPane(this);
+        welcomeScroll.setFitToWidth(true);
+        
+        Label titleLabel = new Label("Welcome to the London Pollution Tracker");
+        titleLabel.getStyleClass().add("welcome-title");
         
         Label instructionLabel = new Label(
         "This is a quick guide to show you how to use the app");
         
-        instructionLabel.setFont(Font.font("Arial",40));
+        instructionLabel.setFont(Font.font("Roboto Medium",16));
         
+
         this.getChildren().addAll(titleLabel,instructionLabel);
-
-    
     }
-    
-
-     
 }

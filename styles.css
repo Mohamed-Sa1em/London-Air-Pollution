@@ -8,10 +8,38 @@
     -fx-padding: 5 10 5 10;
 }
 
+.nav-bar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #fff1eb;
+    -fx-underline: false;
+    -fx-min-width: -1;
+    -fx-font-size: 20;
+}
+
+.nav-bar-button:hover {
+    -fx-underline: true;
+}
+
+.nav-bar-button:pressed {
+    -fx-text-fill: #ede0da;
+    -fx-underline: true;
+}
+
 .filters {
     -fx-border-color: black; 
     -fx-border-width: 0 2 0 0;
     -fx-alignment: center-top;
     -fx-background-color: #fff1eb;
     -fx-padding: 5 10 5 10;
+}
+
+.welcome-contents {
+    -fx-padding: 5 10 5 10;
+    -fx-background-color: #fff1eb;
+}
+
+.welcome-title {
+    -fx-underline: true;
+    -fx-font-family: serif;
+    -fx-font-size: 26;
 }
