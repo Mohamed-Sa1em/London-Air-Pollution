@@ -95,7 +95,7 @@ public class MainWindow extends Application
         return topBar;
     }
 
-    private VBox createFiltersAndControlsBar() {
+    public VBox createFiltersAndControlsBar() {
         VBox filtersBar = new VBox(20);
         filtersBar.getStyleClass().add("filters");
 
@@ -165,6 +165,5 @@ public class MainWindow extends Application
         String selectedpollutant = pollutantSelectorComboBox.getValue();
         String selectedYear = yearSelectorComboBox.getValue();
         map.updateMapData(selectedpollutant, selectedYear);
-    
     }
 }
