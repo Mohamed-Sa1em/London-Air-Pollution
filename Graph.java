@@ -118,7 +118,9 @@ public class Graph
             DataSet data = myLoader.loadDataFile(filePath);
             List<DataPoint> dataPoints = data.getData();
             
-            double average = findIndividualAverage(dataPoints);
+            List<DataPoint> relevantData = findRelevantData(dataPoints);
+            
+            double average = findIndividualAverage(relevantData);
             addToGraph(year, average, series);
         }
     }
@@ -135,5 +137,25 @@ public class Graph
     private void addToGraph(String year, double average, XYChart.Series<Number, Number> series) {
         int intYear = Integer.valueOf(year);
         series.getData().add(new XYChart.Data<>(intYear, average));
+    }
+    
+    private List<DataPoint> findRelevantData(List<DataPoint> data) {
+        double Max_Easting = 553297;
+        double Min_Easting = 510394;
+        double Max_Northing = 193305;
+        double Min_Northing = 168504;
+        
+        ArrayList<DataPoint> relevant = new ArrayList<DataPoint>();
+        for (DataPoint dataPoint: data) {
+            double This_Easting = dataPoint.x();
+            double This_Northing = dataPoint.y();
+            if (This_Easting >= Min_Easting && This_Easting <= Max_Easting &&
+                This_Northing >= Min_Northing && This_Northing <= Max_Northing
+            ) {
+                relevant.add(dataPoint);
+            }
+        }
+        
+        return relevant;
     }
 }
