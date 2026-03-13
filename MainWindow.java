@@ -33,7 +33,7 @@ public class MainWindow extends Application
      * @param  stage the primary stage for this application.
      */
     @Override
-    public void start(Stage stage) throws java.io.FileNotFoundException
+    public void start(Stage stage)
     {
         BorderPane root = new BorderPane();
         root.setBorder(new Border(
@@ -61,11 +61,11 @@ public class MainWindow extends Application
         stage.show();
     }
 
-    private HBox createMenuBar(BorderPane root) throws java.io.FileNotFoundException {
+    private HBox createMenuBar(BorderPane root){
         HBox topBar = new HBox(10);
         topBar.getStyleClass().add("nav-bar");
         
-        Image image = new Image(new FileInputStream("Logo2.png"));
+        Image image = new Image("file:assets/Logo2.png");
         ImageView imageView = new ImageView(image);
         imageView.setPreserveRatio(true);
         imageView.setFitWidth(100); 
