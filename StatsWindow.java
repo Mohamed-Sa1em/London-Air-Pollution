@@ -8,6 +8,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
+import java.util.ArrayList;
 
 /**
  * Write a description of JavaFX class StatsWindow here.
@@ -20,15 +21,19 @@ public class StatsWindow extends BorderPane
     // the map used in the stats window
     private MapController map;
     
+    // the graphs 
+    private Graph no2Graph;
+    private Graph pm25Graph;
+    private Graph pm10Graph;
+    private Graph allGraph;
+    
     public StatsWindow()
     {
         //super(root,width,height);
-        map = new MapController();
+        this.map = new MapController();
         
         this.setLeft(createSelectionBar());
         this.setCenter(createEmpty());
-
-    
     }
     
     /**
@@ -66,7 +71,87 @@ public class StatsWindow extends BorderPane
     }
     
     private void avgPollutantScreen(ActionEvent event) {
-        return;
+        VBox root = new VBox(100);
+        root.setAlignment(Pos.CENTER);
+                
+        HBox column = new HBox(250);
+        column.setAlignment(Pos.CENTER);
+        
+        Label coulumnTitleLabel = new Label("Select the Pollutant,\n starting Year and ending Year");
+        coulumnTitleLabel.setFont(Font.font("Arial",FontWeight.BOLD, 20));
+        
+        VBox pollutantAndYearCoulmn = new VBox(75);
+        pollutantAndYearCoulmn.setAlignment(Pos.CENTER);
+        
+        HBox yearBar = new HBox(100);
+        yearBar.setAlignment(Pos.CENTER);
+        
+        ComboBox<String> startingYearSelectorComboBox = new ComboBox<>();
+        startingYearSelectorComboBox.getItems().addAll(
+            "2018",
+            "2019",
+            "2020",
+            "2021",
+            "2022",
+            "2023"
+        );
+
+        startingYearSelectorComboBox.getSelectionModel().selectFirst();
+        
+        ComboBox<String> endingYearSelectorComboBox = new ComboBox<>();
+        endingYearSelectorComboBox.getItems().addAll(
+            "2018",
+            "2019",
+            "2020",
+            "2021",
+            "2022",
+            "2023"
+        );
+
+        endingYearSelectorComboBox.getSelectionModel().selectFirst();
+
+
+        ComboBox<String>  pollutantSelectorComboBox = new ComboBox<>();
+
+        pollutantSelectorComboBox.getItems().addAll(
+            "NO2",
+            "PM2.5",
+            "PM10"
+
+        );
+        pollutantSelectorComboBox.getSelectionModel().selectFirst();
+        
+
+        Button selectButton = new Button("Select");
+        selectButton.setOnAction(selectionEvent -> {makePeriodMap(pollutantSelectorComboBox, startingYearSelectorComboBox, endingYearSelectorComboBox);});
+        
+        Label orLabel = new Label("OR");
+        orLabel.setFont(Font.font("Arial",FontWeight.BOLD, 20));
+        
+        VBox coordColumn = new VBox(100);
+        coordColumn.setAlignment(Pos.CENTER);
+        
+        Label mapText = new Label("Enter Easting and Northing:");
+        mapText.setFont(Font.font("Arial",FontWeight.BOLD, 20));
+        
+        TextField eastingCoord = new TextField("Enter Easting");
+        TextField northingCoord = new TextField("Enter Northing");
+        
+        Button selectCoord = new Button("Select Coord");
+        //selectCoord.setOnAction(event -> {mapSelection(eastingCoord.);})
+        
+        yearBar.getChildren().addAll(startingYearSelectorComboBox, endingYearSelectorComboBox);
+        
+        pollutantAndYearCoulmn.getChildren().addAll(coulumnTitleLabel, pollutantSelectorComboBox, yearBar, selectButton);
+        
+        coordColumn.getChildren().addAll(eastingCoord, northingCoord, selectCoord);
+        
+        column.getChildren().addAll(pollutantAndYearCoulmn, orLabel, coordColumn);
+        
+        root.getChildren().addAll(column);
+        
+        this.setCenter(root);
+        
     }
     
     private void highPollutantScreen(ActionEvent event) {
@@ -150,22 +235,40 @@ public class StatsWindow extends BorderPane
     }
     
     private void drawNO2Graph(ActionEvent event) {
-        Graph graph = new Graph("NO2");
-        this.setCenter(graph.returnLineChart());
+        if (no2Graph == null) {this.no2Graph = new Graph("NO2");}
+        this.setCenter(no2Graph.returnLineChart());
     }
     
     private void drawPM25Graph(ActionEvent event) {
-        Graph graph = new Graph("PM2.5");
-        this.setCenter(graph.returnLineChart());
+        if (pm25Graph == null) {this.pm25Graph = new Graph("PM2.5");}
+        this.setCenter(pm25Graph.returnLineChart());
     }
 
     private void drawPM10Graph(ActionEvent event) {
-        Graph graph = new Graph("PM10");
-        this.setCenter(graph.returnLineChart());
+        if (pm10Graph == null) {this.pm10Graph = new Graph("PM10");}
+        this.setCenter(pm10Graph.returnLineChart());
     }
     
     private void drawAllThreeGraph(ActionEvent event) {
-        Graph graph = new Graph("NO2", "PM2.5", "PM10");
-        this.setCenter(graph.returnLineChart());
+        if (allGraph == null) {this.allGraph = new Graph("NO2", "PM2.5", "PM10");}
+        this.setCenter(allGraph.returnLineChart());
+    }
+    
+    private void mapSelection() {
+        //this.setCenter(map);
+        //ArrayList<Double> coord = map.selectArea();
+    }
+    
+    private void makePeriodMap(ComboBox<String> pollutant, ComboBox<String> start, ComboBox<String> end) {
+        String selectedPollutant = pollutant.getValue();
+        String startYear = start.getValue();
+        String endYear = end.getValue();
+        
+        if (Integer.valueOf(startYear) < Integer.valueOf(endYear) ) {
+            Graph graph = new Graph (selectedPollutant, startYear, endYear, true);
+            this.setCenter(graph.returnLineChart());
+        } else {
+            this.setCenter(new Label("Invalid Date"));
+        }
     }
 }
