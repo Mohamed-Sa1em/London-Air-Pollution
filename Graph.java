@@ -141,6 +141,53 @@ public class Graph
         lineChart.getData().add(series);
     }
 
+    public Graph(boolean flag, String easting, String northing) {
+        this.pollutant = "NO2";
+        this.pollutant2 = "PM2.5";
+        this.pollutant3 = "PM10";
+        
+        this.calc = new Calculation();
+        
+        
+        // Create axes
+        xAxis = new NumberAxis();
+        xAxis.setAutoRanging(false);
+        xAxis.setLowerBound(2017);
+        xAxis.setUpperBound(2024);
+        xAxis.setLabel("Time");
+
+        yAxis = new NumberAxis();
+        yAxis.setLabel("Average Reading \n across the specified location");
+
+        // Create line chart
+        lineChart = new LineChart<>(xAxis, yAxis);
+        lineChart.setTitle("Polluant levels over time for "+ easting + " " + northing);
+
+        // Create data series and finding averages
+        series = new XYChart.Series<>();
+        series.setName(this.pollutant);
+        HashMap<String, Double> averageOne = calc.findAverageFromLocation(this.pollutant, easting, northing);
+        addToSeries(averageOne, series);
+        
+        series2 = new XYChart.Series<>();
+        series2.setName(this.pollutant2);
+        HashMap<String, Double> averageTwo = calc.findAverageFromLocation(this.pollutant2, easting, northing);
+        addToSeries(averageTwo, series2);
+        
+        series3 = new XYChart.Series<>();
+        series3.setName(this.pollutant3);
+        HashMap<String, Double> averageThree = calc.findAverageFromLocation(this.pollutant3, easting, northing);
+        addToSeries(averageThree, series3);
+        
+        // adding the averages to the respective series
+        addToSeries(averageOne, this.series);
+        addToSeries(averageTwo, this.series2);
+        addToSeries(averageThree, this.series3);
+        
+         // Add series to chart
+        lineChart.getData().addAll(series, series2, series3);
+    }
+    
     /**
      * @return the linechart
      */

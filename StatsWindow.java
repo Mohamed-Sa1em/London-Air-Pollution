@@ -134,11 +134,14 @@ public class StatsWindow extends BorderPane
         Label mapText = new Label("Enter Easting and Northing:");
         mapText.setFont(Font.font("Arial",FontWeight.BOLD, 20));
         
-        TextField eastingCoord = new TextField("Enter Easting");
-        TextField northingCoord = new TextField("Enter Northing");
+        TextField eastingCoord = new TextField();
+        eastingCoord.setPromptText("Enter Easting");
+        
+        TextField northingCoord = new TextField();
+        northingCoord.setPromptText("Enter Northing");
         
         Button selectCoord = new Button("Select Coord");
-        //selectCoord.setOnAction(event -> {mapSelection(eastingCoord.);})
+        selectCoord.setOnAction(actionEvent -> {mapSelection(eastingCoord.getText(), northingCoord.getText());});
         
         yearBar.getChildren().addAll(startingYearSelectorComboBox, endingYearSelectorComboBox);
         
@@ -254,9 +257,9 @@ public class StatsWindow extends BorderPane
         this.setCenter(allGraph.returnLineChart());
     }
     
-    private void mapSelection() {
-        //this.setCenter(map);
-        //ArrayList<Double> coord = map.selectArea();
+    private void mapSelection(String easting, String northing) {
+        Graph graph = new Graph(true, easting, northing);
+        this.setCenter(graph.returnLineChart());
     }
     
     private void makePeriodMap(ComboBox<String> pollutant, ComboBox<String> start, ComboBox<String> end) {

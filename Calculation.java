@@ -45,23 +45,29 @@ public class Calculation
     }
     
     public double findAverageFromSpecificYear(String pollutant, String year) {
-        String folderName = pollutant.toUpperCase();
-        String filePrefix = pollutant.replace(".", "").toLowerCase();
-        
-        String suffix = "";
-        if (filePrefix.contains("pm")) {
-            suffix = "g";
-        }
-        String filePath = "UKAirPollutionData/" + folderName + "/map" + filePrefix + year + suffix + ".csv";
-        
-        DataLoader myLoader = new DataLoader();	
-        DataSet data = myLoader.loadDataFile(filePath);
-        List<DataPoint> dataPoints = data.getData();
+        List<DataPoint> dataPoints = returnDataSet(pollutant, year);
         
         List<DataPoint> relevantData = findRelevantData(dataPoints);
         
         double average = findAverageFromData(relevantData);
         return average;
+    }
+    
+    public HashMap<String, Double> findAverageFromLocation(String pollutant,String eastingStr, String northingStr) {
+        HashMap<String, Double> map = new HashMap<>();
+        
+        double easting = Integer.valueOf(eastingStr);
+        double northing = Integer.valueOf(northingStr);
+        
+        double sum = 0;
+        
+        for (String year: this.years) {
+            List<DataPoint> dataPoints = returnDataSet(pollutant, year);
+            List<DataPoint> data = findRelevantData(dataPoints);
+            double specificVal = findSpecificVal(data, easting, northing);
+            map.put(year, specificVal);
+        }
+        return map;
     }
     
     public List<DataPoint> findRelevantData(List<DataPoint> data) {
@@ -93,9 +99,36 @@ public class Calculation
         return sum / data.size();
     }
     
+    private List<DataPoint> returnDataSet(String pollutant, String year){
+        String folderName = pollutant.toUpperCase();
+        String filePrefix = pollutant.replace(".", "").toLowerCase();
+        
+        String suffix = "";
+        if (filePrefix.contains("pm")) {
+            suffix = "g";
+        }
+        String filePath = "UKAirPollutionData/" + folderName + "/map" + filePrefix + year + suffix + ".csv";
+        
+        DataLoader myLoader = new DataLoader();	
+        DataSet data = myLoader.loadDataFile(filePath);
+        List<DataPoint> dataPoints = data.getData();
+        return dataPoints;
+    }
+    
     private List<String> findMiddleYears(String start, String end) {
         int startIndex = years.indexOf(start);
         int endIndex = years.indexOf(end);
         return years.subList(startIndex, endIndex+1);
+    }
+    
+    private double findSpecificVal(List<DataPoint> dataPoints, double easting, double northing) {
+        double val;
+        
+        for (DataPoint dp: dataPoints) {
+            if (easting == dp.x() && northing == dp.y()) {
+                return dp.value();
+            }
+        }
+        return 0;
     }
 }
