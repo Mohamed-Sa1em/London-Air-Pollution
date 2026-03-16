@@ -11,22 +11,28 @@ import javafx.scene.text.*;
 import java.util.ArrayList;
 
 /**
- * Write a description of JavaFX class StatsWindow here.
+ * StatsWindow class houses all the statistical functionality of the program, allowing 
+ * users to see graphs of the data and see trends over time.
  *
- * @author (your name)
- * @version 1.0
+ * @author Salaah Shameem
+ * @version 1.1
  */
 public class StatsWindow extends BorderPane
 {
     // the map used in the stats window
     private MapController map;
     
-    // the graphs 
+    // the main graphs 
     private Graph no2Graph;
     private Graph pm25Graph;
     private Graph pm10Graph;
     private Graph allGraph;
     
+    private Graph random;
+    
+    /**
+     * Constructor for an object of StatsWindow
+     */
     public StatsWindow()
     {
         //super(root,width,height);
@@ -70,16 +76,21 @@ public class StatsWindow extends BorderPane
         return vbox;
     }
     
+    /**
+     * Creates the average Pollutant Screen, allowing users to either choose to show data from 
+     * a range of years or to find the data from a specific grid location.
+     */
     private void avgPollutantScreen(ActionEvent event) {
         VBox root = new VBox(100);
         root.setAlignment(Pos.CENTER);
-                
+        
         HBox column = new HBox(250);
         column.setAlignment(Pos.CENTER);
         
         Label coulumnTitleLabel = new Label("Select the Pollutant,\n starting Year and ending Year");
         coulumnTitleLabel.setFont(Font.font("Arial",FontWeight.BOLD, 20));
         
+        // for the year-selection side of the screen
         VBox pollutantAndYearCoulmn = new VBox(75);
         pollutantAndYearCoulmn.setAlignment(Pos.CENTER);
         
@@ -123,11 +134,12 @@ public class StatsWindow extends BorderPane
         
 
         Button selectButton = new Button("Select");
-        selectButton.setOnAction(selectionEvent -> {makePeriodMap(pollutantSelectorComboBox, startingYearSelectorComboBox, endingYearSelectorComboBox);});
+        selectButton.setOnAction(selectionEvent -> {makePeriodGraph(pollutantSelectorComboBox, startingYearSelectorComboBox, endingYearSelectorComboBox);});
         
         Label orLabel = new Label("OR");
         orLabel.setFont(Font.font("Arial",FontWeight.BOLD, 20));
         
+        // for the grid-coord selection area of the screen
         VBox coordColumn = new VBox(100);
         coordColumn.setAlignment(Pos.CENTER);
         
@@ -141,7 +153,7 @@ public class StatsWindow extends BorderPane
         northingCoord.setPromptText("Enter Northing");
         
         Button selectCoord = new Button("Select Coord");
-        selectCoord.setOnAction(actionEvent -> {mapSelection(eastingCoord.getText(), northingCoord.getText());});
+        selectCoord.setOnAction(actionEvent -> {gridSelection(eastingCoord.getText(), northingCoord.getText());});
         
         yearBar.getChildren().addAll(startingYearSelectorComboBox, endingYearSelectorComboBox);
         
@@ -154,9 +166,12 @@ public class StatsWindow extends BorderPane
         root.getChildren().addAll(column);
         
         this.setCenter(root);
-        
     }
     
+    /**
+     * Creates the highest pollutant screen, allowing users to choose a pollutant and a year
+     * and a map with the location of the highest recorded value is shown.
+     */
     private void highPollutantScreen(ActionEvent event) {
         VBox root = new VBox(100);
         root.setAlignment(Pos.CENTER);
@@ -201,6 +216,10 @@ public class StatsWindow extends BorderPane
         this.setCenter(root);
     }
     
+    /**
+     * Creates the trend over time screen, allowing users to choose a pollutant (or all three together),
+     * which produces a graph for the pollutant. 
+     */
     private void trendOverTimeScreen(ActionEvent event) {
         VBox root = new VBox(100);
         root.setAlignment(Pos.CENTER);
@@ -229,6 +248,9 @@ public class StatsWindow extends BorderPane
         this.setCenter(root);
     }
     
+    /**
+     * Shows the map with the location of the highest pollutant
+     */
     private void displayMap(ComboBox<String> pollutant, ComboBox<String> year) {
         String selectedYear = year.getValue();
         String selectedPollutant = pollutant.getValue();
@@ -237,39 +259,57 @@ public class StatsWindow extends BorderPane
         map.showHighestPollutant(selectedYear, selectedPollutant);
     }
     
+    /**
+     * Draws the NO2 graph
+     */
     private void drawNO2Graph(ActionEvent event) {
         if (no2Graph == null) {this.no2Graph = new Graph("NO2");}
         this.setCenter(no2Graph.returnLineChart());
     }
     
+    /**
+     * Draws the PM2.5 graph
+     */
     private void drawPM25Graph(ActionEvent event) {
         if (pm25Graph == null) {this.pm25Graph = new Graph("PM2.5");}
         this.setCenter(pm25Graph.returnLineChart());
     }
 
+    /**
+     * Draws the PM10 graph
+     */
     private void drawPM10Graph(ActionEvent event) {
         if (pm10Graph == null) {this.pm10Graph = new Graph("PM10");}
         this.setCenter(pm10Graph.returnLineChart());
     }
     
+    /**
+     * Draws a graph with all three pollutants 
+     */
     private void drawAllThreeGraph(ActionEvent event) {
         if (allGraph == null) {this.allGraph = new Graph("NO2", "PM2.5", "PM10");}
         this.setCenter(allGraph.returnLineChart());
     }
     
-    private void mapSelection(String easting, String northing) {
+    /**
+     * Draws a graph for a specific location from the data.
+     */
+    private void gridSelection(String easting, String northing) {
         Graph graph = new Graph(true, easting, northing);
         this.setCenter(graph.returnLineChart());
     }
     
-    private void makePeriodMap(ComboBox<String> pollutant, ComboBox<String> start, ComboBox<String> end) {
+    /**
+     * Draws a graph for a pollutant for a range of years.
+     */
+    private void makePeriodGraph(ComboBox<String> pollutant, ComboBox<String> start, ComboBox<String> end) {
         String selectedPollutant = pollutant.getValue();
         String startYear = start.getValue();
         String endYear = end.getValue();
         
         if (Integer.valueOf(startYear) < Integer.valueOf(endYear) ) {
-            Graph graph = new Graph (selectedPollutant, startYear, endYear, true);
-            this.setCenter(graph.returnLineChart());
+            random = new Graph (selectedPollutant, startYear, endYear, true);
+            this.setCenter(random.returnLineChart());
         } else {
             this.setCenter(new Label("Invalid Date"));
         }

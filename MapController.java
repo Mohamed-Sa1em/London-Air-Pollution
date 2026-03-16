@@ -157,50 +157,6 @@ public class MapController extends Pane
     }
     
     /**
-     * 
-     */
-    public void selectArea() {
-        this.getChildren().removeIf(node -> node instanceof Rectangle);
-        
-        double baseOpacity = 0.4;
-        
-        List<DataPoint> data = getDataForYearAndPollutant("NO2", "2018").getData();
-        List<DataPoint> relevantData = returnRelevantData(data, Min_Easting, Max_Easting, Min_Northing, Max_Northing);
-        
-        for (DataPoint dp: relevantData) {
-            
-            double currentEasting = dp.x();
-            double currentNorthing = dp.y();
-            
-            double translated_X = (((currentEasting - Min_Easting)/RangeX)* mapBackground.getBoundsInLocal().getWidth());
-
-            double translated_Y = (((Max_Northing - currentNorthing)/RangeY)* mapBackground.getBoundsInLocal().getHeight());
-    
-            Rectangle marker = new Rectangle(translated_X,translated_Y, 26.5, 26.5);
-            marker.setFill(Color.CRIMSON);
-            marker.setOpacity(baseOpacity);
-            marker.setOnMouseClicked(event -> {returnLocation(currentEasting, currentNorthing);});
-            
-            //Hovering and value formatting
-            Tooltip infoPopup = new Tooltip();
-            infoPopup.setShowDelay(Duration.ZERO);
-                
-            Tooltip.install(marker, infoPopup);
-    
-            marker.setOnMouseEntered(event -> {
-                    marker.setOpacity(0.6);    
-                    marker.toFront();          
-            });
-    
-            marker.setOnMouseExited(event -> {     
-                    marker.setOpacity(baseOpacity);    
-            });
-            
-            this.getChildren().add(marker);
-        }
-    }
-    
-    /**
      * @return maximum pollution value
      */
     private double returnMaxLevelOfPollution(List<DataPoint> dataPoints) {
@@ -324,10 +280,5 @@ public class MapController extends Pane
              System.out.println("File not found");
              return null;
         }
-    }
-    
-    private ArrayList<Double> returnLocation(double easting, double northing) {
-        ArrayList<Double> list = new ArrayList(List.of(easting, northing));
-        return list;
     }
 }

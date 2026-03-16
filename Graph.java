@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.Set;
 
 /**
- * Write a description of class Graph here.
+ * The Graph class is used to create graphs for the relevant data and display within the Statistic Page.
  *
- * @author (your name)
- * @version 1.0
+ * @author Salaah Shameem
+ * @version 1.1
  */
 public class Graph 
 {
@@ -112,7 +112,10 @@ public class Graph
         lineChart.getData().addAll(series, series2, series3);
     }
     
-    public Graph(String pollutant, String start, String end, boolean flag) {
+    /**
+     * Constructor for objects of class Graph for a pollutant within a time period.
+     */
+    public Graph(String pollutant, String start, String end, boolean periodFlag) {
         this.pollutant = pollutant;
         this.calc = new Calculation();
         
@@ -141,6 +144,9 @@ public class Graph
         lineChart.getData().add(series);
     }
 
+    /**
+     * Constructor for objects of class Graph for a location over time.
+     */
     public Graph(boolean flag, String easting, String northing) {
         this.pollutant = "NO2";
         this.pollutant2 = "PM2.5";
@@ -157,11 +163,11 @@ public class Graph
         xAxis.setLabel("Time");
 
         yAxis = new NumberAxis();
-        yAxis.setLabel("Average Reading \n across the specified location");
+        yAxis.setLabel("Average Reading across \nthe specified location");
 
         // Create line chart
         lineChart = new LineChart<>(xAxis, yAxis);
-        lineChart.setTitle("Polluant levels over time for "+ easting + " " + northing);
+        lineChart.setTitle("Polluant levels over time for: "+ easting + " " + northing);
 
         // Create data series and finding averages
         series = new XYChart.Series<>();

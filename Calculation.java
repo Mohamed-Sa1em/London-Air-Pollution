@@ -4,14 +4,14 @@ import java.util.List;
 
 
 /**
- * Write a description of class Calculation here.
+ * Calculation class is used perform calculations for other classes to reduce redundant methods.
  *
- * @author (your name)
- * @version (a version number or a date)
+ * @author Salaah Shameem
+ * @version 1.0
  */
 public class Calculation
 {
-
+    // an ArrayList with all the years that the data spans for
     private ArrayList<String> years = new ArrayList<>(List.of("2018", "2019", "2020", "2021", "2022", "2023"));
 
     /**
@@ -21,6 +21,10 @@ public class Calculation
     {
     }
 
+    /**
+     * Finds an average for a pollutant from all years
+     * @return a hashmap with year as key and the average as the value.
+     */
     public HashMap<String, Double> findAverageFromAllYears(String pollutant)
     {
         HashMap<String, Double> map = new HashMap<>();
@@ -32,6 +36,10 @@ public class Calculation
         return map;
     }
     
+    /**
+     * Finds an average for a pollutant from a range years
+     * @return a hashmap with year as key and the average as the value.
+     */
     public HashMap<String, Double> findAverageFromRangeOfYears(String pollutant, String start, String end) {
         HashMap<String, Double> map = new HashMap<>();
 
@@ -44,6 +52,10 @@ public class Calculation
         return map;
     }
     
+    /**
+     * Finds an average for a pollutant from a specific year.
+     * @return average
+     */
     public double findAverageFromSpecificYear(String pollutant, String year) {
         List<DataPoint> dataPoints = returnDataSet(pollutant, year);
         
@@ -53,6 +65,10 @@ public class Calculation
         return average;
     }
     
+    /**
+     * Finds the value for a pollutant from a specific location from all years.
+     * @return a hashmap with year as key and the pollutant value as the value.
+     */
     public HashMap<String, Double> findAverageFromLocation(String pollutant,String eastingStr, String northingStr) {
         HashMap<String, Double> map = new HashMap<>();
         
@@ -70,6 +86,10 @@ public class Calculation
         return map;
     }
     
+    /**
+     * Finds the relevant data points from a larger list of data
+     * @return list of relevant points
+     */
     public List<DataPoint> findRelevantData(List<DataPoint> data) {
         double Max_Easting = 553297;
         double Min_Easting = 510394;
@@ -90,6 +110,10 @@ public class Calculation
         return relevant;
     }
     
+    /**
+     * Finds an average from a list of datapoints
+     * @return the average
+     */
     public double findAverageFromData(List<DataPoint> data) {
         double sum = 0;
         for (DataPoint dataPoint: data) {
@@ -99,6 +123,10 @@ public class Calculation
         return sum / data.size();
     }
     
+    /**
+     * Loads in the required file to retrieve the data points from it
+     * @return a list of datapoints from the file
+     */
     private List<DataPoint> returnDataSet(String pollutant, String year){
         String folderName = pollutant.toUpperCase();
         String filePrefix = pollutant.replace(".", "").toLowerCase();
@@ -115,12 +143,20 @@ public class Calculation
         return dataPoints;
     }
     
+    /**
+     * Breaks the year range to return a sublist
+     * @return a sublist of years
+     */
     private List<String> findMiddleYears(String start, String end) {
         int startIndex = years.indexOf(start);
         int endIndex = years.indexOf(end);
         return years.subList(startIndex, endIndex+1);
     }
     
+    /**
+     * Finds a specific value from a data point
+     * @return the value.
+     */
     private double findSpecificVal(List<DataPoint> dataPoints, double easting, double northing) {
         double val;
         
