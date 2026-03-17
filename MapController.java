@@ -7,6 +7,7 @@ import javafx.scene.control.*;
 import javafx.util.Duration;
 import java.util.List;
 import java.util.ArrayList;
+import java.io.*;
 
 /**
  * MapController class is soley responsibly for rendering the map of london so far.
@@ -14,12 +15,21 @@ import java.util.ArrayList;
  *
  *
  * @author The 4 Mohameds
- * @version 1
+ * @version 1.1
  */
 public class MapController extends Pane
 {
     // Variable that holds and display the london.png image
     private ImageView mapBackground;
+    
+    // CONSTANT VALUES
+    private static final double Max_Easting = 553297;
+    private static final double Min_Easting = 510394;
+    private static final double Max_Northing = 193305;
+    private static final double Min_Northing = 168504;
+
+    private static final double RangeX = Max_Easting - Min_Easting;
+    private static final double RangeY = Max_Northing - Min_Northing;
 
     /**
      * Constructor for objects of class MapController#
@@ -46,14 +56,6 @@ public class MapController extends Pane
      */
     public void plotData(DataSet data)
     {
-        final double Max_Easting = 553297;
-        final double Min_Easting = 510394;
-        final double Max_Northing = 193305;
-        final double Min_Northing = 168504;
-
-        final double RangeX = Max_Easting - Min_Easting;
-        final double RangeY = Max_Northing - Min_Northing;
-        
         List<DataPoint> dataPoints = data.getData();
         List<DataPoint> relevantDataPoints = returnRelevantData(dataPoints, Min_Easting, Max_Easting, Min_Northing, Max_Northing);
         double maxPollutionForThisData = returnMaxLevelOfPollution(relevantDataPoints);
@@ -140,6 +142,23 @@ public class MapController extends Pane
         }
     }
     
+    /**
+     * Used to show the highest level for a selected pollutant
+     */
+    public void showHighestPollutant(String year, String pollutant) {
+        DataSet data = getDataForYearAndPollutant(pollutant, year);
+        
+        List<DataPoint> dataPoints = data.getData();
+        List<DataPoint> relevantDataPoints = returnRelevantData(dataPoints, Min_Easting, Max_Easting, Min_Northing, Max_Northing);
+        double maxValue = returnMaxLevelOfPollution(relevantDataPoints);
+        DataPoint location = getLocationOfMaxValue(relevantDataPoints);
+        
+        showMaxOnMap(maxValue, location, pollutant, year);
+    }
+    
+    /**
+     * @return maximum pollution value
+     */
     private double returnMaxLevelOfPollution(List<DataPoint> dataPoints) {
         double max = 0;
         for (DataPoint dataPoint: dataPoints) {
@@ -151,6 +170,25 @@ public class MapController extends Pane
         return max;
     }
     
+    /**
+     * @return DataPoint of the max pollutant value
+     */
+    private DataPoint getLocationOfMaxValue(List<DataPoint> dataPoints) {
+        double max = 0;
+        DataPoint loc = null;
+        for (DataPoint dataPoint: dataPoints) {
+            if (max < dataPoint.value()) {
+                max = dataPoint.value();
+                loc = dataPoint;
+            }
+        }
+        
+        return loc;
+    }
+    
+    /**
+     * @return mean of the data
+     */
     private double getMeanPollutionValueForData(List<DataPoint> dataPoints) {
         double sum = 0;
         for (DataPoint dataPoint: dataPoints) {
@@ -160,6 +198,10 @@ public class MapController extends Pane
         return sum / dataPoints.size();
     }
     
+    /**
+     * Returns the data points that are relevant to a certain area
+     * @return list of all the relevant data points
+     */
     private List<DataPoint> returnRelevantData(
         List<DataPoint> dataPoints, double MinEasting, double MaxEasting, double MinNorthing, double MaxNorthing
         ) {
@@ -176,5 +218,67 @@ public class MapController extends Pane
         
         return relevantDataPoints;
     }
+    
+    /**
+     * Adds the marker for the highest pollutant level on the map
+     */
+    private void showMaxOnMap(double maxValue, DataPoint dp, String currentPollutant, String year) {
+        this.getChildren().removeIf(node -> node instanceof Rectangle);
+        
+        double This_Easting = dp.x();
+        double This_Northing = dp.y();
+        double This_Value= dp.value();
+        
+        double baseOpacity = 0.4;
+        
+        double translated_X = (((This_Easting - Min_Easting)/RangeX)* mapBackground.getBoundsInLocal().getWidth());
 
+        double translated_Y = (((Max_Northing - This_Northing)/RangeY)* mapBackground.getBoundsInLocal().getHeight());
+
+        Rectangle marker = new Rectangle(translated_X,translated_Y, 26.5, 26.5);
+        marker.setFill(Color.CRIMSON);
+        marker.setOpacity(baseOpacity);
+            
+        //Hovering and value formatting
+        String labelText = String.format("Grid Code: " + dp.gridCode() + "\nx: " + dp.x() + "\ny: " + dp.y() + "\n" + year + "\n" + currentPollutant + " Level: %.2f", This_Value); 
+        Tooltip infoPopup = new Tooltip(labelText);
+        infoPopup.setShowDelay(Duration.ZERO);
+            
+        Tooltip.install(marker, infoPopup);
+
+        marker.setOnMouseEntered(event -> {
+                marker.setOpacity(0.6);    
+                marker.toFront();          
+        });
+
+        marker.setOnMouseExited(event -> {
+                marker.setOpacity(baseOpacity);    
+        });
+
+        this.getChildren().add(marker);
+    }
+    
+    /**
+     * Returns the dataset of a selected year and pollutant
+     */
+    private DataSet getDataForYearAndPollutant(String pollutant, String year) {
+        String folderName = pollutant.toUpperCase();
+        String filePrefix = pollutant.replace(".", "").toLowerCase();
+        
+        String suffix = "";
+        if (filePrefix.contains("pm")) {
+            suffix = "g";
+        }
+        String filePath = "UKAirPollutionData/" + folderName + "/map" + filePrefix + year + suffix + ".csv";
+
+        DataLoader myLoader = new DataLoader();
+        DataSet newData = myLoader.loadDataFile(filePath);
+        
+        if (newData != null) {
+            return newData;         
+        } else {
+             System.out.println("File not found");
+             return null;
+        }
+    }
 }

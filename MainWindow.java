@@ -161,6 +161,5 @@ public class MainWindow extends Application
         String selectedpollutant = pollutantSelectorComboBox.getValue();
         String selectedYear = yearSelectorComboBox.getValue();
         map.updateMapData(selectedpollutant, selectedYear);
-    
     }
 }
