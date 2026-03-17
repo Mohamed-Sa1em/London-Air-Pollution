@@ -34,7 +34,7 @@ public class MainWindow extends Application
      * @param  stage the primary stage for this application.
      */
     @Override
-    public void start(Stage stage) throws java.io.FileNotFoundException
+    public void start(Stage stage) throws Exception,java.io.FileNotFoundException
     {
         BorderPane root = new BorderPane();
         root.setBorder(new Border(
@@ -62,7 +62,7 @@ public class MainWindow extends Application
         stage.show();
     }
 
-    private HBox createMenuBar(BorderPane root) throws java.io.FileNotFoundException {
+    private HBox createMenuBar(BorderPane root) throws Exception, java.io.FileNotFoundException {
         HBox topBar = new HBox(10);
         topBar.getStyleClass().add("nav-bar");
         
@@ -81,7 +81,16 @@ public class MainWindow extends Application
         welcomeWindowButton.setMinWidth(welcomeWindowButton.getPrefWidth());
 
         Button dataMapButton = new Button("Data Map");
-        dataMapButton.setOnAction(event -> {dataMapButtonPressed(event, root);});
+        dataMapButton.setOnAction(event -> {
+            try
+            {
+                dataMapButtonPressed(event, root);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        });
         dataMapButton.setFont(new Font(20));
         dataMapButton.setMinWidth(dataMapButton.getPrefWidth());
 
@@ -95,7 +104,7 @@ public class MainWindow extends Application
         return topBar;
     }
 
-    private VBox createFiltersAndControlsBar() {
+    private VBox createFiltersAndControlsBar() throws Exception {
         VBox filtersBar = new VBox(20);
         filtersBar.getStyleClass().add("filters");
 
@@ -134,9 +143,27 @@ public class MainWindow extends Application
         //Handles the change of the year and the pollutant
         //Loading the new dataset
 
-        yearSelectorComboBox.setOnAction(event -> {comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox);});
+        yearSelectorComboBox.setOnAction(event -> {
+            try
+            {
+                comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        });
 
-        pollutantSelectorComboBox.setOnAction(event -> {comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox);});
+        pollutantSelectorComboBox.setOnAction(event -> {
+            try
+            {
+                comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        });
 
         filtersBar.getChildren().addAll(filtersAndControlsLabel, selectYearLabel, yearSelectorComboBox, pollutantSelectionLabel, pollutantSelectorComboBox);
 
@@ -149,7 +176,7 @@ public class MainWindow extends Application
         root.setLeft(null);
     }
     
-    private void dataMapButtonPressed(ActionEvent event, BorderPane root) {
+    private void dataMapButtonPressed(ActionEvent event, BorderPane root) throws Exception {
         root.setCenter(map);
         root.setLeft(createFiltersAndControlsBar());
         DataLoader myLoader = new DataLoader();
@@ -162,10 +189,16 @@ public class MainWindow extends Application
         root.setLeft(null);
     }
     
-    private void comboBoxSelection(ComboBox<String> yearSelectorComboBox, ComboBox<String> pollutantSelectorComboBox) {
-        String selectedpollutant = pollutantSelectorComboBox.getValue();
-        String selectedYear = yearSelectorComboBox.getValue();
-        map.updateMapData(selectedpollutant, selectedYear);
+    private void comboBoxSelection(ComboBox<String> yearSelectorComboBox, ComboBox<String> pollutantSelectorComboBox) throws Exception {
+        String selectedPollutant = pollutantSelectorComboBox.getValue();
+        if (!yearSelectorComboBox.getValue().equals("live")) {
+            String selectedYear = yearSelectorComboBox.getValue();
+            map.updateMapData(selectedPollutant, selectedYear);
+        }
+        else {
+            System.out.println("live data");
+            map.updateLiveMapData(selectedPollutant);
+        }
     
     }
 }

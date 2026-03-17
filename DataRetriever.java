@@ -21,18 +21,30 @@ public class DataRetriever
         
     }
     
-    public List<DataPoint> getAllDataFromAPI(DataSet dataSet) throws Exception {
+    public DataSet getAllDataFromAPI(DataSet dataSet, String pollutant) throws Exception {
         
-        List<DataPoint> liveRelevantDataSet = new ArrayList<DataPoint>();
+        DataSet newData = new DataSet(pollutant, "live", dataSet.getMetric(), dataSet.getUnits());
         
-        for (DataPoint dataPoint: dataSet.getData()){
-            double liveValue = getDataAtPoint(dataPoint, dataSet.getPollutant());
-            liveRelevantDataSet.add(new DataPoint(dataPoint.gridCode(), dataPoint.x(), dataPoint.y(), liveValue));
+        for (DataPoint dataPoint: dataSet.returnRelevantData()){
+            System.out.println(getDataAtPoint(dataPoint, pollutant));
+            double liveValue = getDataAtPoint(dataPoint, pollutant);
+            System.out.println(liveValue);
+            newData.addData(
+                new String[]{
+                    String.valueOf(dataPoint.gridCode()), 
+                    String.valueOf(dataPoint.x()), 
+                    String.valueOf(dataPoint.y()), 
+                    String.valueOf(liveValue)
+                }
+            );
+            
         }
-        return liveRelevantDataSet;
+    
+        
+        return newData;
     }
     
-    public double getDataAtPoint(DataPoint dataPoint, String pollutant) throws Exception {
+    private double getDataAtPoint(DataPoint dataPoint, String pollutant) throws Exception {
         int easting = dataPoint.x();
         int northing = dataPoint.y();
         
@@ -44,11 +56,14 @@ public class DataRetriever
         double[] pollutionValues = pollutionAPI.getAPIResponse(latitude, longitude);
         
         HashMap<String, Double> pollutionData = new HashMap<>();
-        pollutionData.put("pm2.5", pollutionValues[0]);
-        pollutionData.put("pm10", pollutionValues[1]);
-        pollutionData.put("no2", pollutionValues[2]);
+        pollutionData.put("PM2.5", pollutionValues[0]);
+        pollutionData.put("PM10", pollutionValues[1]);
+        pollutionData.put("NO2", pollutionValues[2]);
         
-        return pollutionData.get(pollutant);
+        System.out.println(pollutionData.get(pollutant));
+        
+        if (pollutionData.get(pollutant) != null) return pollutionData.get(pollutant);
+        return 1;
         
     }
 }

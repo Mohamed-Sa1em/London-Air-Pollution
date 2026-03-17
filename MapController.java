@@ -7,6 +7,7 @@ import javafx.scene.control.*;
 import javafx.util.Duration;
 import java.util.List;
 import java.util.ArrayList;
+import javafx.application.Platform;
 
 /**
  * MapController class is soley responsibly for rendering the map of london so far.
@@ -20,6 +21,11 @@ public class MapController extends Pane
 {
     // Variable that holds and display the london.png image
     private ImageView mapBackground;
+    
+    private final double Max_Easting = 553297;
+    private final double Min_Easting = 510394;
+    private final double Max_Northing = 193305;
+    private final double Min_Northing = 168504;
 
     /**
      * Constructor for objects of class MapController#
@@ -44,22 +50,17 @@ public class MapController extends Pane
     /**
      * 
      */
-    public void plotData(DataSet data)
+    public void plotData(DataSet dataSet)
     {
-        final double Max_Easting = 553297;
-        final double Min_Easting = 510394;
-        final double Max_Northing = 193305;
-        final double Min_Northing = 168504;
-
+        
         final double RangeX = Max_Easting - Min_Easting;
         final double RangeY = Max_Northing - Min_Northing;
         
-        List<DataPoint> dataPoints = data.getData();
-        List<DataPoint> relevantDataPoints = returnRelevantData(dataPoints, Min_Easting, Max_Easting, Min_Northing, Max_Northing);
+        List<DataPoint> relevantDataPoints = dataSet.returnRelevantData();
         double maxPollutionForThisData = returnMaxLevelOfPollution(relevantDataPoints);
         double meanPollutionForThisData = getMeanPollutionValueForData(relevantDataPoints);
         
-        String currentPollutant = data.getPollutant();
+        String currentPollutant = dataSet.getPollutant();
         
         PollutantThreshold thresholds = PollutantThreshold.fromString(currentPollutant);
         thresholds.setGreenMax(meanPollutionForThisData * 0.9);
@@ -121,6 +122,7 @@ public class MapController extends Pane
      * Then updates the map 
      */
     public void updateMapData(String pollutant, String year) {
+ 
         String folderName = pollutant.toUpperCase();
         String filePrefix = pollutant.replace(".", "").toLowerCase();
         
@@ -128,47 +130,33 @@ public class MapController extends Pane
         if (filePrefix.contains("pm")) {
             suffix = "g";
         }
+        String filePath = "UKAirPollutionData/" + folderName + "/map" + filePrefix + year + suffix + ".csv";
+            
+        DataLoader myLoader = new DataLoader();
+        DataSet newData = myLoader.loadDataFile(filePath);
         
-        if (!year.equals("live")) {
-            String filePath = "UKAirPollutionData/" + folderName + "/map" + filePrefix + year + suffix + ".csv";
-            
-            DataLoader myLoader = new DataLoader();
-            DataSet newData = myLoader.loadDataFile(filePath);
-            
-            if (newData != null) {
-                this.plotData(newData);
-            } else {
-                System.out.println("Error: Could not find file " + filePath);
-            }
-        }else {
-            String filePath = "UKAirPollutionData/" + folderName + "/map" + filePrefix + "2018" + suffix + ".csv";
-            
-            DataLoader myLoader = new DataLoader();
-            DataSet newData = myLoader.loadDataFile(filePath);
-            
-            DataRetriever dataRetriever = new DataRetriever();
-            try
-            {
-                final double Max_Easting = 553297;
-                final double Min_Easting = 510394;
-                final double Max_Northing = 193305;
-                final double Min_Northing = 168504;
-                
-                List<DataPoint> relevantDataPoints = returnRelevantData(newData.getData(), Min_Easting, Max_Easting, Min_Northing, Max_Northing);
-                
-                List<DataPoint> liveRelevantData = dataRetriever.getAllDataFromAPI(newData);
-                // work on this later
-                
-                //this.plotData(liveRelevantData);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-            
-            
+        if (newData != null) {
+            this.plotData(newData);
+        } else {
+            System.out.println("Error: Could not find file " + filePath);
         }
         
+            
+    }
+    
+    public void updateLiveMapData(String pollutant) throws Exception {
+        
+        DataLoader myLoader = new DataLoader();
+        DataSet standardData = myLoader.loadDataFile("UKAirPollutionData/NO2/mapno22023.csv");
+        
+        DataRetriever dataRetriever = new DataRetriever();
+        DataSet liveData = dataRetriever.getAllDataFromAPI(standardData, pollutant.toUpperCase());
+        
+        if (liveData != null) {
+            this.plotData(liveData);
+        } else {
+            System.out.println("Error: Could not find data");
+        }
     }
     
     private double returnMaxLevelOfPollution(List<DataPoint> dataPoints) {
@@ -191,21 +179,6 @@ public class MapController extends Pane
         return sum / dataPoints.size();
     }
     
-    private List<DataPoint> returnRelevantData(
-        List<DataPoint> dataPoints, double MinEasting, double MaxEasting, double MinNorthing, double MaxNorthing
-        ) {
-        ArrayList<DataPoint> relevantDataPoints = new ArrayList<DataPoint>();
-        for (DataPoint dataPoint: dataPoints) {
-            double This_Easting = dataPoint.x();
-            double This_Northing = dataPoint.y();
-            if (This_Easting >= MinEasting && This_Easting <= MaxEasting &&
-                This_Northing >= MinNorthing && This_Northing <= MaxNorthing
-            ) {
-                relevantDataPoints.add(dataPoint);
-            }
-        }
-        
-        return relevantDataPoints;
-    }
+    
 
 }

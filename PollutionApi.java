@@ -42,8 +42,15 @@ public class PollutionApi
         
         String jsonString = result.toString();
         
+        //System.out.println(jsonString);
+        
         double[] parsedValues = parsePollution(jsonString);
-
+        
+        for (double value: parsedValues) { 
+            System.out.println(value); 
+        }
+        //System.out.println(parsedValues);
+        
         return parsedValues;
     }
     
@@ -62,6 +69,8 @@ public class PollutionApi
         double pm25 = components.get("pm2_5").asDouble();
         double pm10 = components.get("pm10").asDouble();
         double no2 = components.get("no2").asDouble();
+        
+        //System.out.println(pm25 + " " + pm10 + " " + no2);
         
         return new double[]{pm25, pm10, no2};
     }
