@@ -110,7 +110,8 @@ public class MainWindow extends Application
             "2020",
             "2021",
             "2022",
-            "2023"
+            "2023",
+            "live"
         );
 
         yearSelectorComboBox.getSelectionModel().selectFirst();

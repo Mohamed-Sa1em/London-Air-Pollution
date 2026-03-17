@@ -13,8 +13,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class PollutionApi
 {
     private static final String API_KEY = "8ba6990fa2a1c29023afcbc72b7e9969";
+    
+    public void PollutionApi() {}
 
-    public static String getAPIResponse(double lat, double lon) throws Exception {
+    public double[] getAPIResponse(double lat, double lon) throws Exception {
 
         String urlString =
         "https://api.openweathermap.org/data/2.5/air_pollution"
@@ -37,11 +39,15 @@ public class PollutionApi
         }
 
         reader.close();
+        
+        String jsonString = result.toString();
+        
+        double[] parsedValues = parsePollution(jsonString);
 
-        return result.toString();
+        return parsedValues;
     }
     
-    public static void parsePollution(String json) throws Exception {
+    private double[] parsePollution(String json) throws Exception {
 
         ObjectMapper mapper = new ObjectMapper();
     
@@ -56,31 +62,8 @@ public class PollutionApi
         double pm25 = components.get("pm2_5").asDouble();
         double pm10 = components.get("pm10").asDouble();
         double no2 = components.get("no2").asDouble();
-        double o3 = components.get("o3").asDouble();
-    
-        System.out.println("AQI: " + aqi);
-        System.out.println("PM2.5: " + pm25);
-        System.out.println("PM10: " + pm10);
-        System.out.println("NO2: " + no2);
-        System.out.println("O3: " + o3);
-    }
-    
-    public static void main(String[] args) {
-
-        try {
-    
-            double lat = 51.5074;
-            double lon = -0.1278;
-    
-            String json = getAPIResponse(lat, lon);
-    
-            parsePollution(json);
-    
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
-
+        
+        return new double[]{pm25, pm10, no2};
     }
     
 }

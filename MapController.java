@@ -128,16 +128,47 @@ public class MapController extends Pane
         if (filePrefix.contains("pm")) {
             suffix = "g";
         }
-        String filePath = "UKAirPollutionData/" + folderName + "/map" + filePrefix + year + suffix + ".csv";
-
-        DataLoader myLoader = new DataLoader();
-        DataSet newData = myLoader.loadDataFile(filePath);
-
-        if (newData != null) {
-            this.plotData(newData);
-        } else {
-            System.out.println("Error: Could not find file " + filePath);
+        
+        if (!year.equals("live")) {
+            String filePath = "UKAirPollutionData/" + folderName + "/map" + filePrefix + year + suffix + ".csv";
+            
+            DataLoader myLoader = new DataLoader();
+            DataSet newData = myLoader.loadDataFile(filePath);
+            
+            if (newData != null) {
+                this.plotData(newData);
+            } else {
+                System.out.println("Error: Could not find file " + filePath);
+            }
+        }else {
+            String filePath = "UKAirPollutionData/" + folderName + "/map" + filePrefix + "2018" + suffix + ".csv";
+            
+            DataLoader myLoader = new DataLoader();
+            DataSet newData = myLoader.loadDataFile(filePath);
+            
+            DataRetriever dataRetriever = new DataRetriever();
+            try
+            {
+                final double Max_Easting = 553297;
+                final double Min_Easting = 510394;
+                final double Max_Northing = 193305;
+                final double Min_Northing = 168504;
+                
+                List<DataPoint> relevantDataPoints = returnRelevantData(newData.getData(), Min_Easting, Max_Easting, Min_Northing, Max_Northing);
+                
+                List<DataPoint> liveRelevantData = dataRetriever.getAllDataFromAPI(newData);
+                // work on this later
+                
+                //this.plotData(liveRelevantData);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+            
+            
         }
+        
     }
     
     private double returnMaxLevelOfPollution(List<DataPoint> dataPoints) {
