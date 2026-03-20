@@ -62,7 +62,7 @@ public class DataRetriever
         
         System.out.println(pollutionData.get(pollutant));
         
-        if (pollutionData.get(pollutant) != null) return pollutionData.get(pollutant);
+        if (pollutionData.get(pollutant.toUpperCase()) != null) return pollutionData.get(pollutant.toUpperCase());
         return 1;
         
     }

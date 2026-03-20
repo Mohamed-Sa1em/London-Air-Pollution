@@ -14,7 +14,7 @@ public class PollutionApi
 {
     private static final String API_KEY = "8ba6990fa2a1c29023afcbc72b7e9969";
     
-    public void PollutionApi() {}
+    public PollutionApi() {}
 
     public double[] getAPIResponse(double lat, double lon) throws Exception {
 
@@ -42,13 +42,13 @@ public class PollutionApi
         
         String jsonString = result.toString();
         
-        //System.out.println(jsonString);
+        System.out.println(jsonString);
         
         double[] parsedValues = parsePollution(jsonString);
         
-        for (double value: parsedValues) { 
-            System.out.println(value); 
-        }
+        //for (double value: parsedValues) { 
+            //System.out.println(value); 
+        //}
         //System.out.println(parsedValues);
         
         return parsedValues;

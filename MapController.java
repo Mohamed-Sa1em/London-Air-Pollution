@@ -130,7 +130,15 @@ public class MapController extends Pane
         if (filePrefix.contains("pm")) {
             suffix = "g";
         }
-        String filePath = "UKAirPollutionData/" + folderName + "/map" + filePrefix + year + suffix + ".csv";
+        
+        String filePath = "";
+        
+        if(!year.equals("live")) {
+            filePath = "UKAirPollutionData/" + folderName + "/map" + filePrefix + year + suffix + ".csv";
+        }else {
+            filePath = "UKAirPollutionData/" + folderName + "/current.csv";
+        }
+        
             
         DataLoader myLoader = new DataLoader();
         DataSet newData = myLoader.loadDataFile(filePath);
@@ -142,21 +150,6 @@ public class MapController extends Pane
         }
         
             
-    }
-    
-    public void updateLiveMapData(String pollutant) throws Exception {
-        
-        DataLoader myLoader = new DataLoader();
-        DataSet standardData = myLoader.loadDataFile("UKAirPollutionData/NO2/mapno22023.csv");
-        
-        DataRetriever dataRetriever = new DataRetriever();
-        DataSet liveData = dataRetriever.getAllDataFromAPI(standardData, pollutant.toUpperCase());
-        
-        if (liveData != null) {
-            this.plotData(liveData);
-        } else {
-            System.out.println("Error: Could not find data");
-        }
     }
     
     private double returnMaxLevelOfPollution(List<DataPoint> dataPoints) {

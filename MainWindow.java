@@ -13,6 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.geometry.Insets;
 import java.awt.event.ActionListener;
+import javafx.concurrent.Task;
 
 /**
  * Write a description of JavaFX class MainWindow here.
@@ -25,6 +26,8 @@ public class MainWindow extends Application
     private MapController map = new MapController();
     private WelcomeWindow welcome = new WelcomeWindow();
     private StatsWindow stats = new StatsWindow();
+    
+    private final CSVFiller CSVfiller = new CSVFiller();
     
     /**
      * The start method is the main entry point for every JavaFX application. 
@@ -170,6 +173,31 @@ public class MainWindow extends Application
         return filtersBar;
     }
     
+    private void createCSVFiles() {
+        String[] pollutants = new String[]{"NO2", "PM2.5", "PM10"};
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                // Your background logic here (runs off the UI thread)
+                CSVfiller.fillAllCSV(pollutants);
+                return null;
+            }
+        };
+
+        // Update UI safely once done
+        task.setOnSucceeded(e -> {
+            // Safe to touch UI elements here
+            System.out.println("Done!");
+        });
+
+        task.setOnFailed(e -> {
+            task.getException().printStackTrace();
+        });
+
+        Thread thread = new Thread(task);
+        thread.setDaemon(true); // dies when app closes
+        thread.start();
+    }
     
     private void welcomeButtonPressed(ActionEvent event, BorderPane root) {
         root.setCenter(welcome);
@@ -191,14 +219,7 @@ public class MainWindow extends Application
     
     private void comboBoxSelection(ComboBox<String> yearSelectorComboBox, ComboBox<String> pollutantSelectorComboBox) throws Exception {
         String selectedPollutant = pollutantSelectorComboBox.getValue();
-        if (!yearSelectorComboBox.getValue().equals("live")) {
-            String selectedYear = yearSelectorComboBox.getValue();
-            map.updateMapData(selectedPollutant, selectedYear);
-        }
-        else {
-            System.out.println("live data");
-            map.updateLiveMapData(selectedPollutant);
-        }
-    
+        String selectedYear = yearSelectorComboBox.getValue();
+        map.updateMapData(selectedPollutant, selectedYear);
     }
 }
