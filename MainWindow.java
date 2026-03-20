@@ -27,6 +27,9 @@ public class MainWindow extends Application
     private MapController map = new MapController();
     private WelcomeWindow welcome = new WelcomeWindow();
     private StatsWindow stats = new StatsWindow();
+    private InteractiveMap liveMap = new InteractiveMap();
+    private boolean staticMap = false;
+    private BorderPane root = new BorderPane();
     
     private final CSVFiller CSVfiller = new CSVFiller();
     
@@ -42,7 +45,6 @@ public class MainWindow extends Application
     public void start(Stage stage) throws Exception,java.io.FileNotFoundException
 
     {
-        BorderPane root = new BorderPane();
         root.setBorder(new Border(
                 new BorderStroke(
                     Color.BLACK,               // border color
@@ -160,6 +162,8 @@ public class MainWindow extends Application
         pollutantSelectorComboBox.getSelectionModel().selectFirst();
         pollutionLevelSelectorComboBox.getSelectionModel().selectFirst();
 
+        Button interactiveSwap = new Button("Change Map");
+        interactiveSwap.setOnAction(event -> swapMapButton(event,root));
 
         //Handles the change of the year and the pollutant
         //Loading the new dataset
@@ -198,7 +202,7 @@ public class MainWindow extends Application
             }
         });
 
-        filtersBar.getChildren().addAll(filtersAndControlsLabel, selectYearLabel, yearSelectorComboBox, pollutantSelectionLabel, pollutantSelectorComboBox,pollutionLevelSelectionLabel,pollutionLevelSelectorComboBox);
+        filtersBar.getChildren().addAll(filtersAndControlsLabel, selectYearLabel, yearSelectorComboBox, pollutantSelectionLabel, pollutantSelectorComboBox,pollutionLevelSelectionLabel,pollutionLevelSelectorComboBox,interactiveSwap);
         
         
         return filtersBar;
@@ -241,6 +245,16 @@ public class MainWindow extends Application
         DataLoader myLoader = new DataLoader();
         DataSet no2Data = myLoader.loadDataFile("UKAirPollutionData/NO2/mapno22023.csv");
         map.plotData(no2Data,"All");
+    }
+    
+    private void swapMapButton(ActionEvent event, BorderPane root){
+        if (staticMap){
+            root.setCenter(liveMap);
+        }
+        else{
+            root.setCenter(map);
+        }
+        staticMap = !(staticMap);
     }
     
     private void statsButtonPressed(ActionEvent event, BorderPane root) {
