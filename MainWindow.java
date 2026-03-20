@@ -94,8 +94,9 @@ public class MainWindow extends Application
     private VBox createFiltersAndControlsBar() {
         VBox filtersBar = new VBox(20);
         filtersBar.getStyleClass().add("filters");
-
+        
         Label filtersAndControlsLabel = new Label ("Filters and Controls");
+        filtersAndControlsLabel.getStyleClass().add("bar-title");
         Label selectYearLabel = new Label("Select Year");
 
         ComboBox<String> yearSelectorComboBox = new ComboBox<>();
@@ -134,7 +135,6 @@ public class MainWindow extends Application
         pollutantSelectorComboBox.setOnAction(event -> {comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox);});
 
         filtersBar.getChildren().addAll(filtersAndControlsLabel, selectYearLabel, yearSelectorComboBox, pollutantSelectionLabel, pollutantSelectorComboBox);
-
         return filtersBar;
     }
     
