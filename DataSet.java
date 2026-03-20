@@ -20,6 +20,11 @@ public class DataSet
     private String units;
     
     private List<DataPoint> data;
+    
+    private final double Max_Easting = 553297;
+    private final double Min_Easting = 510394;
+    private final double Max_Northing = 193305;
+    private final double Min_Northing = 168504;
 
     /**
      * Constructor for objects of class DataSet
@@ -91,6 +96,21 @@ public class DataSet
                                toInt(values[1]), 
                                toInt(values[2]), 
                                toDouble(values[3]))); 
+    }
+    
+    public List<DataPoint> returnRelevantData() {
+        ArrayList<DataPoint> relevantDataPoints = new ArrayList<DataPoint>();
+        for (DataPoint dataPoint: data) {
+            double This_Easting = dataPoint.x();
+            double This_Northing = dataPoint.y();
+            if (This_Easting >= Min_Easting && This_Easting <= Max_Easting &&
+                This_Northing >= Min_Northing && This_Northing <= Max_Northing
+            ) {
+                relevantDataPoints.add(dataPoint);
+            }
+        }
+        
+        return relevantDataPoints;
     }
     
     /**

@@ -12,6 +12,9 @@ import javafx.scene.image.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.geometry.Insets;
+import java.awt.event.ActionListener;
+import javafx.concurrent.Task;
+
 
 /**
  * Write a description of JavaFX class MainWindow here.
@@ -25,6 +28,8 @@ public class MainWindow extends Application
     private WelcomeWindow welcome = new WelcomeWindow();
     private StatsWindow stats = new StatsWindow();
     
+    private final CSVFiller CSVfiller = new CSVFiller();
+    
     /**
      * The start method is the main entry point for every JavaFX application. 
      * It is called after the init() method has returned and after 
@@ -33,7 +38,9 @@ public class MainWindow extends Application
      * @param  stage the primary stage for this application.
      */
     @Override
-    public void start(Stage stage)
+
+    public void start(Stage stage) throws Exception,java.io.FileNotFoundException
+
     {
         BorderPane root = new BorderPane();
         root.setBorder(new Border(
@@ -61,7 +68,8 @@ public class MainWindow extends Application
         stage.show();
     }
 
-    private HBox createMenuBar(BorderPane root){
+
+    private HBox createMenuBar(BorderPane root) throws Exception, java.io.FileNotFoundException {
         HBox topBar = new HBox(10);
         topBar.getStyleClass().add("nav-bar");
         
@@ -79,7 +87,19 @@ public class MainWindow extends Application
         welcomeWindowButton.getStyleClass().add("nav-bar-button");
 
         Button dataMapButton = new Button("Data Map");
-        dataMapButton.setOnAction(event -> {dataMapButtonPressed(event, root);});
+        
+        dataMapButton.setOnAction(event -> {
+            try
+            {
+                dataMapButtonPressed(event, root);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        });
+        dataMapButton.setFont(new Font(20));
+        dataMapButton.setMinWidth(dataMapButton.getPrefWidth());
         dataMapButton.getStyleClass().add("nav-bar-button");
 
         Button pollutionStatsButton = new Button("Pollution Stats");
@@ -91,7 +111,7 @@ public class MainWindow extends Application
         return topBar;
     }
 
-    private VBox createFiltersAndControlsBar() {
+    private VBox createFiltersAndControlsBar() throws Exception {
         VBox filtersBar = new VBox(20);
         filtersBar.getStyleClass().add("filters");
 
@@ -106,7 +126,8 @@ public class MainWindow extends Application
             "2020",
             "2021",
             "2022",
-            "2023"
+            "2023",
+            "live"
         );
 
         yearSelectorComboBox.getSelectionModel().selectFirst();
@@ -143,11 +164,39 @@ public class MainWindow extends Application
         //Handles the change of the year and the pollutant
         //Loading the new dataset
 
-        yearSelectorComboBox.setOnAction(event -> {comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox,pollutionLevelSelectorComboBox);});
 
-        pollutantSelectorComboBox.setOnAction(event -> {comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox,pollutionLevelSelectorComboBox);});
+        yearSelectorComboBox.setOnAction(event -> {
+            try
+            {
+                comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox, pollutionLevelSelectorComboBox);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        });
+
+        pollutantSelectorComboBox.setOnAction(event -> {
+            try
+            {
+                comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox, pollutionLevelSelectorComboBox);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        });
         
-        pollutionLevelSelectorComboBox.setOnAction(event -> {comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox,pollutionLevelSelectorComboBox);});
+        pollutionLevelSelectorComboBox.setOnAction(event -> {
+            try
+            {
+                comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox, pollutionLevelSelectorComboBox);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        });
 
         filtersBar.getChildren().addAll(filtersAndControlsLabel, selectYearLabel, yearSelectorComboBox, pollutantSelectionLabel, pollutantSelectorComboBox,pollutionLevelSelectionLabel,pollutionLevelSelectorComboBox);
         
@@ -155,13 +204,38 @@ public class MainWindow extends Application
         return filtersBar;
     }
     
+    private void createCSVFiles() {
+        String[] pollutants = new String[]{"NO2", "PM2.5", "PM10"};
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                // Your background logic here (runs off the UI thread)
+                CSVfiller.fillAllCSV(pollutants);
+                return null;
+            }
+        };
+
+        // Update UI safely once done
+        task.setOnSucceeded(e -> {
+            // Safe to touch UI elements here
+            System.out.println("Done!");
+        });
+
+        task.setOnFailed(e -> {
+            task.getException().printStackTrace();
+        });
+
+        Thread thread = new Thread(task);
+        thread.setDaemon(true); // dies when app closes
+        thread.start();
+    }
     
     private void welcomeButtonPressed(ActionEvent event, BorderPane root) {
         root.setCenter(welcome);
         root.setLeft(null);
     }
     
-    private void dataMapButtonPressed(ActionEvent event, BorderPane root) {
+    private void dataMapButtonPressed(ActionEvent event, BorderPane root) throws Exception {
         root.setCenter(map);
         root.setLeft(createFiltersAndControlsBar());
         DataLoader myLoader = new DataLoader();
@@ -174,11 +248,11 @@ public class MainWindow extends Application
         root.setLeft(null);
     }
     
-    private void comboBoxSelection(ComboBox<String> yearSelectorComboBox, ComboBox<String> pollutantSelectorComboBox,ComboBox<String>pollutionLevelSelectorComboBox) {
-        String selectedpollutant = pollutantSelectorComboBox.getValue();
+    private void comboBoxSelection(ComboBox<String> yearSelectorComboBox, ComboBox<String> pollutantSelectorComboBox, ComboBox<String> pollutionLevelComboBox) throws Exception {
+        String selectedPollutant = pollutantSelectorComboBox.getValue();
         String selectedYear = yearSelectorComboBox.getValue();
-        String selectedPollutionLevel = pollutionLevelSelectorComboBox.getValue();
+        String selectedPollutionLevel = pollutionLevelComboBox.getValue();
+        map.updateMapData(selectedPollutant, selectedYear, selectedPollutionLevel);
 
-        map.updateMapData(selectedpollutant, selectedYear,selectedPollutionLevel );
     }
 }
