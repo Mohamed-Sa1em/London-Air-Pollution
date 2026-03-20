@@ -126,19 +126,36 @@ public class MainWindow extends Application
             "PM10"
 
         );
+        
+        
+        Label pollutionLevelSelectionLabel = new Label("Select Level");
+
+        ComboBox<String>  pollutionLevelSelectorComboBox = new ComboBox<>();
+
+        pollutionLevelSelectorComboBox.getItems().addAll(
+            "All",
+            "High",
+            "Medium",
+            "Low"
+        );
 
 
         pollutantSelectorComboBox.getSelectionModel().selectFirst();
+        pollutionLevelSelectorComboBox.getSelectionModel().selectFirst();
+
 
         //Handles the change of the year and the pollutant
         //Loading the new dataset
 
-        yearSelectorComboBox.setOnAction(event -> {comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox);});
+        yearSelectorComboBox.setOnAction(event -> {comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox,pollutionLevelSelectorComboBox);});
 
-        pollutantSelectorComboBox.setOnAction(event -> {comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox);});
+        pollutantSelectorComboBox.setOnAction(event -> {comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox,pollutionLevelSelectorComboBox);});
+        
+        pollutionLevelSelectorComboBox.setOnAction(event -> {comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox,pollutionLevelSelectorComboBox);});
 
-        filtersBar.getChildren().addAll(filtersAndControlsLabel, selectYearLabel, yearSelectorComboBox, pollutantSelectionLabel, pollutantSelectorComboBox);
-
+        filtersBar.getChildren().addAll(filtersAndControlsLabel, selectYearLabel, yearSelectorComboBox, pollutantSelectionLabel, pollutantSelectorComboBox,pollutionLevelSelectionLabel,pollutionLevelSelectorComboBox);
+        
+        
         return filtersBar;
     }
     
@@ -153,7 +170,7 @@ public class MainWindow extends Application
         root.setLeft(createFiltersAndControlsBar());
         DataLoader myLoader = new DataLoader();
         DataSet no2Data = myLoader.loadDataFile("UKAirPollutionData/NO2/mapno22023.csv");
-        map.plotData(no2Data);
+        map.plotData(no2Data,"All");
     }
     
     private void statsButtonPressed(ActionEvent event, BorderPane root) {
@@ -161,9 +178,11 @@ public class MainWindow extends Application
         root.setLeft(null);
     }
     
-    private void comboBoxSelection(ComboBox<String> yearSelectorComboBox, ComboBox<String> pollutantSelectorComboBox) {
+    private void comboBoxSelection(ComboBox<String> yearSelectorComboBox, ComboBox<String> pollutantSelectorComboBox,ComboBox<String>pollutionLevelSelectorComboBox) {
         String selectedpollutant = pollutantSelectorComboBox.getValue();
         String selectedYear = yearSelectorComboBox.getValue();
-        map.updateMapData(selectedpollutant, selectedYear);
+        String selectedPollutionLevel = pollutionLevelSelectorComboBox.getValue();
+
+        map.updateMapData(selectedpollutant, selectedYear,selectedPollutionLevel );
     }
 }

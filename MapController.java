@@ -54,15 +54,16 @@ public class MapController extends Pane
     /**
      * 
      */
-    public void plotData(DataSet data)
+    public void plotData(DataSet data,String filterLevel)
     {
         List<DataPoint> dataPoints = data.getData();
         List<DataPoint> relevantDataPoints = returnRelevantData(dataPoints, Min_Easting, Max_Easting, Min_Northing, Max_Northing);
+        
         double maxPollutionForThisData = returnMaxLevelOfPollution(relevantDataPoints);
         double meanPollutionForThisData = getMeanPollutionValueForData(relevantDataPoints);
         
         String currentPollutant = data.getPollutant();
-        
+            
         PollutantThreshold thresholds = PollutantThreshold.fromString(currentPollutant);
         thresholds.setGreenMax(meanPollutionForThisData * 0.9);
         thresholds.setYellowMax(meanPollutionForThisData);
@@ -82,15 +83,20 @@ public class MapController extends Pane
             double translated_Y = (((Max_Northing - This_Northing)/RangeY)* mapBackground.getBoundsInLocal().getHeight());
 
             Rectangle marker = new Rectangle(translated_X,translated_Y, 26.5, 26.5);
+            String pointCategory = "";
+            
             if (This_Value < thresholds.getGreenMax()) {
                 marker.setFill(Color.GREEN.darker());
+                pointCategory = "Low";
             } else if (This_Value < thresholds.getYellowMax()) {
                 marker.setFill(Color.YELLOW);
+                pointCategory = "Medium";
             } else if (This_Value < thresholds.getOrangeMax()) {
                 marker.setFill(Color.DARKORANGE);
+                pointCategory = "Medium";
             } else {
                 marker.setFill(Color.CRIMSON);
-            }
+                pointCategory = "High";            }
             marker.setOpacity(baseOpacity);
                 
             //Hovering and value formatting
@@ -110,8 +116,10 @@ public class MapController extends Pane
                     //marker.setRadius(3);      
                     marker.setOpacity(baseOpacity);    
             });
-
-            this.getChildren().add(marker);
+            
+            if (filterLevel.equals("All") || filterLevel.equals(pointCategory)) {
+                this.getChildren().add(marker);
+            }
         
 
         }
@@ -122,7 +130,7 @@ public class MapController extends Pane
      * Helper methood that get both the pollutant and the year
      * Then updates the map 
      */
-    public void updateMapData(String pollutant, String year) {
+    public void updateMapData(String pollutant, String year,String filterLevel) {
         String folderName = pollutant.toUpperCase();
         String filePrefix = pollutant.replace(".", "").toLowerCase();
         
@@ -135,12 +143,14 @@ public class MapController extends Pane
         DataLoader myLoader = new DataLoader();
         DataSet newData = myLoader.loadDataFile(filePath);
 
-        if (newData != null) {
-            this.plotData(newData);
-        } else {
+        if (newData != null) {  
+            this.plotData(newData,filterLevel);
+        }   else {
             System.out.println("Error: Could not find file " + filePath);
         }
     }
+    
+    
     
     /**
      * Used to show the highest level for a selected pollutant
