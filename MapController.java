@@ -38,7 +38,7 @@ public class MapController extends Pane
     public MapController()
     {
         //loading the image
-        Image mapImage = new Image("file:London.png");
+        Image mapImage = new Image("file:assets/London.png");
         mapBackground = new ImageView(mapImage);
 
         //scaling the image to set the window 

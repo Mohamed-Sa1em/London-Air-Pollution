@@ -12,7 +12,6 @@ import javafx.scene.image.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.geometry.Insets;
-import java.awt.event.ActionListener;
 
 /**
  * Write a description of JavaFX class MainWindow here.
@@ -34,7 +33,7 @@ public class MainWindow extends Application
      * @param  stage the primary stage for this application.
      */
     @Override
-    public void start(Stage stage) throws java.io.FileNotFoundException
+    public void start(Stage stage)
     {
         BorderPane root = new BorderPane();
         root.setBorder(new Border(
@@ -62,11 +61,11 @@ public class MainWindow extends Application
         stage.show();
     }
 
-    private HBox createMenuBar(BorderPane root) throws java.io.FileNotFoundException {
+    private HBox createMenuBar(BorderPane root){
         HBox topBar = new HBox(10);
         topBar.getStyleClass().add("nav-bar");
         
-        Image image = new Image(new FileInputStream("Logo2.png"));
+        Image image = new Image("file:assets/Logo2.png");
         ImageView imageView = new ImageView(image);
         imageView.setPreserveRatio(true);
         imageView.setFitWidth(100); 
@@ -77,18 +76,15 @@ public class MainWindow extends Application
         
         Button welcomeWindowButton = new Button("Welcome");
         welcomeWindowButton.setOnAction(event -> {welcomeButtonPressed(event, root);});
-        welcomeWindowButton.setFont(new Font(20));
-        welcomeWindowButton.setMinWidth(welcomeWindowButton.getPrefWidth());
+        welcomeWindowButton.getStyleClass().add("nav-bar-button");
 
         Button dataMapButton = new Button("Data Map");
         dataMapButton.setOnAction(event -> {dataMapButtonPressed(event, root);});
-        dataMapButton.setFont(new Font(20));
-        dataMapButton.setMinWidth(dataMapButton.getPrefWidth());
+        dataMapButton.getStyleClass().add("nav-bar-button");
 
         Button pollutionStatsButton = new Button("Pollution Stats");
         pollutionStatsButton.setOnAction(event -> {statsButtonPressed(event, root);});
-        pollutionStatsButton.setFont(new Font(20));
-        pollutionStatsButton.setMinWidth(pollutionStatsButton.getPrefWidth());
+        pollutionStatsButton.getStyleClass().add("nav-bar-button");
 
         topBar.getChildren().addAll(imageView, spacing, welcomeWindowButton, dataMapButton, pollutionStatsButton);
 
