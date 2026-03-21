@@ -31,8 +31,6 @@ public class MainWindow extends Application
     private boolean staticMap = true;
     private BorderPane root = new BorderPane();
     
-    private final CSVFiller CSVfiller = new CSVFiller();
-    
     /**
      * The start method is the main entry point for every JavaFX application. 
      * It is called after the init() method has returned and after 
@@ -128,9 +126,7 @@ public class MainWindow extends Application
             "2020",
             "2021",
             "2022",
-            "2023",
-            "live"
-        );
+            "2023");
 
         yearSelectorComboBox.getSelectionModel().selectFirst();
 
@@ -208,32 +204,6 @@ public class MainWindow extends Application
         return filtersBar;
     }
     
-    private void createCSVFiles() {
-        String[] pollutants = new String[]{"NO2", "PM2.5", "PM10"};
-        Task<Void> task = new Task<>() {
-            @Override
-            protected Void call() throws Exception {
-                // Your background logic here (runs off the UI thread)
-                CSVfiller.fillAllCSV(pollutants);
-                return null;
-            }
-        };
-
-        // Update UI safely once done
-        task.setOnSucceeded(e -> {
-            // Safe to touch UI elements here
-            System.out.println("Done!");
-        });
-
-        task.setOnFailed(e -> {
-            task.getException().printStackTrace();
-        });
-
-        Thread thread = new Thread(task);
-        thread.setDaemon(true); // dies when app closes
-        thread.start();
-    }
-    
     private void welcomeButtonPressed(ActionEvent event, BorderPane root) {
         root.setCenter(welcome);
         root.setLeft(null);
@@ -267,6 +237,5 @@ public class MainWindow extends Application
         String selectedYear = yearSelectorComboBox.getValue();
         String selectedPollutionLevel = pollutionLevelComboBox.getValue();
         map.updateMapData(selectedPollutant, selectedYear, selectedPollutionLevel);
-
     }
 }

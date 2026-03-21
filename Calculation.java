@@ -28,7 +28,7 @@ public class Calculation
     public HashMap<String, Double> findAverageFromAllYears(String pollutant)
     {
         HashMap<String, Double> map = new HashMap<>();
-        	
+            
         for (String year: this.years) {
             double average = findAverageFromSpecificYear(pollutant, year);
             map.put(year, average);
@@ -137,7 +137,7 @@ public class Calculation
         }
         String filePath = "UKAirPollutionData/" + folderName + "/map" + filePrefix + year + suffix + ".csv";
         
-        DataLoader myLoader = new DataLoader();	
+        DataLoader myLoader = new DataLoader();    
         DataSet data = myLoader.loadDataFile(filePath);
         List<DataPoint> dataPoints = data.getData();
         return dataPoints;

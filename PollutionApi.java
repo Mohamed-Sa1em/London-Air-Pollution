@@ -16,7 +16,7 @@ public class PollutionApi
     
     public PollutionApi() {}
 
-    public double[] getAPIResponse(double lat, double lon) throws Exception {
+    private double[] getAPIResponse(double lat, double lon) throws Exception {
 
         String urlString =
         "https://api.openweathermap.org/data/2.5/air_pollution"
@@ -46,11 +46,6 @@ public class PollutionApi
         
         double[] parsedValues = parsePollution(jsonString);
         
-        //for (double value: parsedValues) { 
-            //System.out.println(value); 
-        //}
-        //System.out.println(parsedValues);
-        
         return parsedValues;
     }
     
@@ -75,4 +70,8 @@ public class PollutionApi
         return new double[]{pm25, pm10, no2};
     }
     
+    public String getDataAtPoint(double latitude, double longitude) throws Exception {
+        double[] pollutionValues = getAPIResponse(latitude, longitude);
+        return ("PM2.5: " + pollutionValues[0] + "<br>" + "PM10: " + pollutionValues[1] + "<br>" + "NO2: " + pollutionValues[2]);
+    }
 }

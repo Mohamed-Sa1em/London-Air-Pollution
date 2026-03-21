@@ -141,15 +141,8 @@ public class MapController extends Pane
             suffix = "g";
         }
         
-        String filePath = "";
+        String filePath = "UKAirPollutionData/" + folderName + "/map" + filePrefix + year + suffix + ".csv";
         
-        if(!year.equals("live")) {
-            filePath = "UKAirPollutionData/" + folderName + "/map" + filePrefix + year + suffix + ".csv";
-        }else {
-            filePath = "UKAirPollutionData/" + folderName + "/current.csv";
-        }
-        
-            
         DataLoader myLoader = new DataLoader();
         DataSet newData = myLoader.loadDataFile(filePath);
 
@@ -159,8 +152,6 @@ public class MapController extends Pane
 
             System.out.println("Error: Could not find file " + filePath);
         }
-        
-            
     }
     
     

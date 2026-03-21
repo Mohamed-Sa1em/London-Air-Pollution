@@ -11,13 +11,13 @@ public class InteractiveMap extends StackPane {
     private MapView mapView;
     private Marker clickedMark;
     private MapLabel clickedLabel;
-    private DataRetriever liveData;
+    private PollutionApi liveData;
     private String info;
     
     
     public InteractiveMap() { 
         mapView = new MapView();
-        liveData = new DataRetriever();
+        liveData = new PollutionApi();
         
         Coordinate londonCenter = new Coordinate(51.5074, -0.1278);
         mapView.setCenter(londonCenter);
