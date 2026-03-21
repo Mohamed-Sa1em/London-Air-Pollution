@@ -66,4 +66,9 @@ public class DataRetriever
         return 1;
         
     }
+    
+    public String getDataAtPoint(double latitude, double longitude) throws Exception {
+        double[] pollutionValues = pollutionAPI.getAPIResponse(latitude, longitude);
+        return ("PM2.5: " + pollutionValues[0] + "<br>" + "PM10: " + pollutionValues[1] + "<br>" + "NO2: " + pollutionValues[2]);
+    }
 }

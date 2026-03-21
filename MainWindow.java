@@ -28,7 +28,7 @@ public class MainWindow extends Application
     private WelcomeWindow welcome = new WelcomeWindow();
     private StatsWindow stats = new StatsWindow();
     private InteractiveMap liveMap = new InteractiveMap();
-    private boolean staticMap = false;
+    private boolean staticMap = true;
     private BorderPane root = new BorderPane();
     
     private final CSVFiller CSVfiller = new CSVFiller();
