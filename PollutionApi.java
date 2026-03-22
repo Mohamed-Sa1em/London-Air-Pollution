@@ -23,8 +23,6 @@ public class PollutionApi
         + "?lat=" + lat
         + "&lon=" + lon
         + "&appid=" + API_KEY;
-        
-        System.out.println(urlString);
 
         URL url = new URL(urlString);
 

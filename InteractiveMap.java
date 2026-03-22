@@ -37,19 +37,19 @@ public class InteractiveMap extends StackPane {
                 clickedLabel.setPosition(londonCenter);
                 clickedLabel.setVisible(true);
                 mapView.addLabel(clickedLabel);
-                
-                System.out.println("Map is ready and marker added.");
+        
             }
         });
         
         mapView.addEventHandler(MapViewEvent.MAP_CLICKED, event -> {
             Coordinate clickedCoord = event.getCoordinate();
             clickedMark.setPosition(clickedCoord);
-            System.out.println("Map clicked at: " + clickedCoord.getLatitude());
+            double lat = clickedCoord.getLatitude();
+            double lon = normalizeLongitude(clickedCoord.getLongitude());
             
             try
             {
-                info = liveData.getDataAtPoint(clickedCoord.getLatitude(), clickedCoord.getLongitude());
+                info = liveData.getDataAtPoint(lat, lon);
             }
             catch (Exception e)
             {
@@ -59,7 +59,7 @@ public class InteractiveMap extends StackPane {
             if (clickedLabel != null) {
                 mapView.removeLabel(clickedLabel);
             }
-            
+                    
             clickedLabel = new MapLabel(info, 10, -30);
             clickedLabel.setPosition(clickedCoord);
             clickedLabel.setVisible(true);
@@ -68,4 +68,13 @@ public class InteractiveMap extends StackPane {
     
         mapView.initialize(Configuration.builder().showZoomControls(true).build());
     }
+    
+    private double normalizeLongitude(double lon) {
+    // This formula wraps the number so it always stays between -180 and 180
+    double n = (lon + 180.0) % 360.0;
+    if (n < 0) {
+        n += 360.0;
+    }
+    return n - 180.0;
+}
 }
