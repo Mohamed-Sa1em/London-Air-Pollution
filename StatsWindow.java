@@ -39,7 +39,7 @@ public class StatsWindow extends BorderPane
         this.map = new MapController();
         
         this.setLeft(createSelectionBar());
-        this.setCenter(createEmpty());
+        avgPollutantScreen();
     }
     
     /**
@@ -56,23 +56,31 @@ public class StatsWindow extends BorderPane
      */
     private VBox createSelectionBar() {
         VBox vbox = new VBox(50);
-        vbox.getStyleClass().add("filters"); // adding stylesheet to the node
+        vbox.getStyleClass().add("stats-bar"); // adding stylesheet to the node
         
         Label titleLabel = new Label("Stats");
-        titleLabel.setFont(Font.font("Arial",FontWeight.BOLD, 20));
-
-        Button averagePollutantLevel = new Button("Average Pollutant Level");
-        averagePollutantLevel.setOnAction(this::avgPollutantScreen);
+        titleLabel.getStyleClass().add("bar-title");
         
-        Button highestPollutantLevel = new Button("Highest Pollutant Levels");
+        ToggleButton averagePollutantLevel = new ToggleButton("Average Pollutant Level");
+        averagePollutantLevel.setOnAction(event -> avgPollutantScreen());
+        averagePollutantLevel.getStyleClass().add("stats-button");
+        
+        ToggleButton highestPollutantLevel = new ToggleButton("Highest Pollutant Levels");
         highestPollutantLevel.setOnAction(this::highPollutantScreen);
+        highestPollutantLevel.getStyleClass().add("stats-button");
         
-        Button trendsOverTime = new Button("Trends over Time");
+        ToggleButton trendsOverTime = new ToggleButton("Trends over Time");
         trendsOverTime.setOnAction(this::trendOverTimeScreen);
+        trendsOverTime.getStyleClass().add("stats-button");
+        
+        ToggleGroup group = new ToggleGroup();
+        averagePollutantLevel.setToggleGroup(group);
+        highestPollutantLevel.setToggleGroup(group);
+        trendsOverTime.setToggleGroup(group);
+        
+        averagePollutantLevel.setSelected(true);
         
         vbox.getChildren().addAll(titleLabel, averagePollutantLevel, highestPollutantLevel, trendsOverTime);
-        
-        vbox.setMaxWidth(110);
         return vbox;
     }
     
@@ -80,7 +88,7 @@ public class StatsWindow extends BorderPane
      * Creates the average Pollutant Screen, allowing users to either choose to show data from 
      * a range of years or to find the data from a specific grid location.
      */
-    private void avgPollutantScreen(ActionEvent event) {
+    private void avgPollutantScreen() {
         VBox root = new VBox(100);
         root.setAlignment(Pos.CENTER);
         
