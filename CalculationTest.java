@@ -1,22 +1,22 @@
-
-
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
- * The test class MainWindowTest.
+ * The test class CalculationTest.
  *
  * @author  (your name)
  * @version (a version number or a date)
  */
-public class MainWindowTest
+public class CalculationTest
 {
+    private Calculation calculation;
+    
     /**
-     * Default constructor for test class MainWindowTest
+     * Default constructor for test class CalculationTest
      */
-    public MainWindowTest()
+    public CalculationTest()
     {
     }
 
@@ -28,6 +28,7 @@ public class MainWindowTest
     @BeforeEach
     public void setUp()
     {
+        calculation = new Calculation();
     }
 
     /**
@@ -38,5 +39,13 @@ public class MainWindowTest
     @AfterEach
     public void tearDown()
     {
+    }
+    
+    @Test
+    public void testFindSpecificValExists() {
+        DataLoader loader = new DataLoader();
+        DataSet dataSet = loader.loadDataFile("UKAirPollutionData/NO2/mapno22018.csv");
+        
+        
     }
 }

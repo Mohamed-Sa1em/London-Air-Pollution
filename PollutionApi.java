@@ -10,11 +10,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author (your name)
  * @version (a version number or a date)
  */
-public class PollutionApi
+public class PollutionAPI extends LiveData
 {
     private static final String API_KEY = "8ba6990fa2a1c29023afcbc72b7e9969";
     
-    public PollutionApi() {}
+    public PollutionAPI() {}
 
     private double[] getAPIResponse(double lat, double lon) throws Exception {
 

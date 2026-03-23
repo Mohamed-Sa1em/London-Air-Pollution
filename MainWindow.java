@@ -27,7 +27,7 @@ public class MainWindow extends Application
     private MapController map = new MapController();
     private WelcomeWindow welcome = new WelcomeWindow();
     private StatsWindow stats = new StatsWindow();
-    private InteractiveMap liveMap = new InteractiveMap();
+    private InteractiveMap liveMap;
     private boolean staticMap = true;
     private BorderPane root = new BorderPane();
     
@@ -89,14 +89,8 @@ public class MainWindow extends Application
         Button dataMapButton = new Button("Data Map");
         
         dataMapButton.setOnAction(event -> {
-            try
-            {
-                dataMapButtonPressed(event, root);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+            try{ dataMapButtonPressed(event, root); }
+            catch (Exception e){ e.printStackTrace(); }
         });
         dataMapButton.setFont(new Font(20));
         dataMapButton.setMinWidth(dataMapButton.getPrefWidth());
@@ -141,6 +135,7 @@ public class MainWindow extends Application
             "PM10"
 
         );
+        pollutantSelectorComboBox.getSelectionModel().selectFirst();
         
         
         Label pollutionLevelSelectionLabel = new Label("Select Level");
@@ -153,55 +148,60 @@ public class MainWindow extends Application
             "Medium",
             "Low"
         );
-
-
-        pollutantSelectorComboBox.getSelectionModel().selectFirst();
+        
         pollutionLevelSelectorComboBox.getSelectionModel().selectFirst();
-
-        Button interactiveSwap = new Button("Change Map");
-        interactiveSwap.setOnAction(event -> swapMapButton(event,root));
+        
+        
+        Label liveMapSelectionLabel = new Label("Live Maps:");
+        
+        Button pollutionLiveButton = new Button("Pollution");
+        pollutionLiveButton.setOnAction(event -> {
+            String text = pollutionLiveButton.getText();
+            swapMapButton(event, root, text);
+        });
+        
+        Button weatherLiveButton = new Button("Weather");
+        weatherLiveButton.setOnAction(event -> {
+            String text = weatherLiveButton.getText();
+            swapMapButton(event, root, text);
+        });
 
         //Handles the change of the year and the pollutant
         //Loading the new dataset
 
+        setupComboBoxEvent(yearSelectorComboBox, pollutantSelectorComboBox, pollutionLevelSelectorComboBox);
 
+        filtersBar.getChildren().addAll(
+            filtersAndControlsLabel, 
+            selectYearLabel,
+            yearSelectorComboBox,
+            pollutantSelectionLabel, 
+            pollutantSelectorComboBox,
+            pollutionLevelSelectionLabel,
+            pollutionLevelSelectorComboBox,
+            liveMapSelectionLabel,
+            pollutionLiveButton,
+            weatherLiveButton
+        );
+        
+        return filtersBar;
+    }
+    
+    private void setupComboBoxEvent(ComboBox yearSelectorComboBox, ComboBox pollutantSelectorComboBox, ComboBox pollutionLevelSelectorComboBox) {
         yearSelectorComboBox.setOnAction(event -> {
-            try
-            {
-                comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox, pollutionLevelSelectorComboBox);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+            try{ comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox, pollutionLevelSelectorComboBox); }
+            catch (Exception e){ e.printStackTrace(); }
         });
 
         pollutantSelectorComboBox.setOnAction(event -> {
-            try
-            {
-                comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox, pollutionLevelSelectorComboBox);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+            try{ comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox, pollutionLevelSelectorComboBox); }
+            catch (Exception e){ e.printStackTrace(); }
         });
         
         pollutionLevelSelectorComboBox.setOnAction(event -> {
-            try
-            {
-                comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox, pollutionLevelSelectorComboBox);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+            try{ comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox, pollutionLevelSelectorComboBox); }
+            catch (Exception e){ e.printStackTrace(); }
         });
-
-        filtersBar.getChildren().addAll(filtersAndControlsLabel, selectYearLabel, yearSelectorComboBox, pollutantSelectionLabel, pollutantSelectorComboBox,pollutionLevelSelectionLabel,pollutionLevelSelectorComboBox,interactiveSwap);
-        
-        
-        return filtersBar;
     }
     
     private void welcomeButtonPressed(ActionEvent event, BorderPane root) {
@@ -214,17 +214,16 @@ public class MainWindow extends Application
         root.setLeft(createFiltersAndControlsBar());
         DataLoader myLoader = new DataLoader();
         DataSet no2Data = myLoader.loadDataFile("UKAirPollutionData/NO2/mapno22023.csv");
-        map.plotData(no2Data,"All");
+        map.plotData(no2Data, "All");
     }
     
-    private void swapMapButton(ActionEvent event, BorderPane root){
-        if (staticMap){
-            root.setCenter(liveMap);
+    private void swapMapButton(ActionEvent event, BorderPane root, String text){
+        if (text.equals("Weather")) {
+            liveMap = new InteractiveMap("Weather");
+        }else {
+            liveMap = new InteractiveMap("Pollution");
         }
-        else{
-            root.setCenter(map);
-        }
-        staticMap = !(staticMap);
+        root.setCenter(liveMap);
     }
     
     private void statsButtonPressed(ActionEvent event, BorderPane root) {
@@ -232,10 +231,14 @@ public class MainWindow extends Application
         root.setLeft(null);
     }
     
-    private void comboBoxSelection(ComboBox<String> yearSelectorComboBox, ComboBox<String> pollutantSelectorComboBox, ComboBox<String> pollutionLevelComboBox) throws Exception {
+    private void comboBoxSelection(
+        ComboBox<String> yearSelectorComboBox, ComboBox<String> pollutantSelectorComboBox, 
+        ComboBox<String> pollutionLevelComboBox
+        ) throws Exception {
         String selectedPollutant = pollutantSelectorComboBox.getValue();
         String selectedYear = yearSelectorComboBox.getValue();
         String selectedPollutionLevel = pollutionLevelComboBox.getValue();
+        root.setCenter(map);
         map.updateMapData(selectedPollutant, selectedYear, selectedPollutionLevel);
     }
 }
