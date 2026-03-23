@@ -14,11 +14,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class WeatherAPI extends LiveData
 {
     private static final String API_KEY = "8ba6990fa2a1c29023afcbc72b7e9969";
+    private String urlString;
+    
 
     /**
      * Constructor for objects of class WeatherAPI
      */
-    public WeatherAPI(){ }
+    public WeatherAPI(){
+        
+    }
     
     private double[] getAPIResponse(double lat, double lon) throws Exception {
         String urlString =
@@ -29,33 +33,17 @@ public class WeatherAPI extends LiveData
         + "&units=metric";
 
         URL url = new URL(urlString);
-
-        BufferedReader reader =
-        new BufferedReader(new InputStreamReader(url.openStream()));
-
-        String line;
-        StringBuilder result = new StringBuilder();
-
-        while((line = reader.readLine()) != null){
-            result.append(line);
-        }
-
-        reader.close();
         
-        String jsonString = result.toString();
-        
-        System.out.println(jsonString);
-        
-        double[] parsedValues = parseWeather(jsonString);
+        double[] parsedValues = getParsedData(url);
         
         return parsedValues;
     }
     
-    private double[] parseWeather(String json) throws Exception {
+    public double[] parseData(String jsonString) throws Exception {
 
         ObjectMapper mapper = new ObjectMapper();
     
-        JsonNode root = mapper.readTree(json);
+        JsonNode root = mapper.readTree(jsonString);
     
         // main
         JsonNode main = root.get("main");

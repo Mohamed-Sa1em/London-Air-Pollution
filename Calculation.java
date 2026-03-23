@@ -2,7 +2,6 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * Calculation class is used perform calculations for other classes to reduce redundant methods.
  *

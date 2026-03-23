@@ -26,32 +26,16 @@ public class PollutionAPI extends LiveData
 
         URL url = new URL(urlString);
 
-        BufferedReader reader =
-        new BufferedReader(new InputStreamReader(url.openStream()));
-
-        String line;
-        StringBuilder result = new StringBuilder();
-
-        while((line = reader.readLine()) != null){
-            result.append(line);
-        }
-
-        reader.close();
-        
-        String jsonString = result.toString();
-        
-        System.out.println(jsonString);
-        
-        double[] parsedValues = parsePollution(jsonString);
+        double[] parsedValues = getParsedData(url);
         
         return parsedValues;
     }
     
-    private double[] parsePollution(String json) throws Exception {
+    public double[] parseData(String jsonString) throws Exception {
 
         ObjectMapper mapper = new ObjectMapper();
     
-        JsonNode root = mapper.readTree(json);
+        JsonNode root = mapper.readTree(jsonString);
     
         JsonNode pollution = root.get("list").get(0);
     

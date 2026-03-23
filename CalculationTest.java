@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 public class CalculationTest
 {
     private Calculation calculation;
+    private DataSet workingData;
     
     /**
      * Default constructor for test class CalculationTest
@@ -29,6 +30,9 @@ public class CalculationTest
     public void setUp()
     {
         calculation = new Calculation();
+        
+        DataLoader loader = new DataLoader();
+        workingData = loader.loadDataFile("UKAirPollutionData/NO2/mapno22018.csv");
     }
 
     /**
@@ -39,13 +43,11 @@ public class CalculationTest
     @AfterEach
     public void tearDown()
     {
+        
     }
     
     @Test
     public void testFindSpecificValExists() {
-        DataLoader loader = new DataLoader();
-        DataSet dataSet = loader.loadDataFile("UKAirPollutionData/NO2/mapno22018.csv");
-        
         
     }
 }
