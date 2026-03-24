@@ -27,8 +27,9 @@ public class MainWindow extends Application
     private MapController map = new MapController();
     private WelcomeWindow welcome = new WelcomeWindow();
     private StatsWindow stats = new StatsWindow();
-    
-    private final CSVFiller CSVfiller = new CSVFiller();
+    private InteractiveMap liveMap;
+    private boolean staticMap = true;
+    private BorderPane root = new BorderPane();
     
     /**
      * The start method is the main entry point for every JavaFX application. 
@@ -42,7 +43,6 @@ public class MainWindow extends Application
     public void start(Stage stage) throws Exception,java.io.FileNotFoundException
 
     {
-        BorderPane root = new BorderPane();
         root.setBorder(new Border(
                 new BorderStroke(
                     Color.BLACK,               // border color
@@ -89,14 +89,8 @@ public class MainWindow extends Application
         Button dataMapButton = new Button("Data Map");
         
         dataMapButton.setOnAction(event -> {
-            try
-            {
-                dataMapButtonPressed(event, root);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+            try{ dataMapButtonPressed(event, root); }
+            catch (Exception e){ e.printStackTrace(); }
         });
         dataMapButton.setFont(new Font(20));
         dataMapButton.setMinWidth(dataMapButton.getPrefWidth());
@@ -127,9 +121,7 @@ public class MainWindow extends Application
             "2020",
             "2021",
             "2022",
-            "2023",
-            "live"
-        );
+            "2023");
 
         yearSelectorComboBox.getSelectionModel().selectFirst();
 
@@ -144,6 +136,7 @@ public class MainWindow extends Application
             "PM10"
 
         );
+        pollutantSelectorComboBox.getSelectionModel().selectFirst();
         
         
         Label pollutionLevelSelectionLabel = new Label("Select Level");
@@ -156,15 +149,28 @@ public class MainWindow extends Application
             "Medium",
             "Low"
         );
-
-
-        pollutantSelectorComboBox.getSelectionModel().selectFirst();
+        
         pollutionLevelSelectorComboBox.getSelectionModel().selectFirst();
-
+        
+        
+        Label liveMapSelectionLabel = new Label("Live Maps:");
+        
+        Button pollutionLiveButton = new Button("Pollution");
+        pollutionLiveButton.setOnAction(event -> {
+            String text = pollutionLiveButton.getText();
+            swapMapButton(event, root, text);
+        });
+        
+        Button weatherLiveButton = new Button("Weather");
+        weatherLiveButton.setOnAction(event -> {
+            String text = weatherLiveButton.getText();
+            swapMapButton(event, root, text);
+        });
 
         //Handles the change of the year and the pollutant
         //Loading the new dataset
 
+        setupComboBoxEvent(yearSelectorComboBox, pollutantSelectorComboBox, pollutionLevelSelectorComboBox);
 
         yearSelectorComboBox.setOnAction(event -> {
             try
@@ -198,35 +204,38 @@ public class MainWindow extends Application
                 e.printStackTrace();
             }
         });
-
-        filtersBar.getChildren().addAll(filtersAndControlsLabel, selectYearLabel, yearSelectorComboBox, pollutantSelectionLabel, pollutantSelectorComboBox,pollutionLevelSelectionLabel,pollutionLevelSelectorComboBox);
+        
+        filtersBar.getChildren().addAll(
+            filtersAndControlsLabel, 
+            selectYearLabel,
+            yearSelectorComboBox,
+            pollutantSelectionLabel, 
+            pollutantSelectorComboBox,
+            pollutionLevelSelectionLabel,
+            pollutionLevelSelectorComboBox,
+            liveMapSelectionLabel,
+            pollutionLiveButton,
+            weatherLiveButton
+        );
+        
         return filtersBar;
     }
     
-    private void createCSVFiles() {
-        String[] pollutants = new String[]{"NO2", "PM2.5", "PM10"};
-        Task<Void> task = new Task<>() {
-            @Override
-            protected Void call() throws Exception {
-                // Your background logic here (runs off the UI thread)
-                CSVfiller.fillAllCSV(pollutants);
-                return null;
-            }
-        };
-
-        // Update UI safely once done
-        task.setOnSucceeded(e -> {
-            // Safe to touch UI elements here
-            System.out.println("Done!");
+    private void setupComboBoxEvent(ComboBox yearSelectorComboBox, ComboBox pollutantSelectorComboBox, ComboBox pollutionLevelSelectorComboBox) {
+        yearSelectorComboBox.setOnAction(event -> {
+            try{ comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox, pollutionLevelSelectorComboBox); }
+            catch (Exception e){ e.printStackTrace(); }
         });
 
-        task.setOnFailed(e -> {
-            task.getException().printStackTrace();
+        pollutantSelectorComboBox.setOnAction(event -> {
+            try{ comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox, pollutionLevelSelectorComboBox); }
+            catch (Exception e){ e.printStackTrace(); }
         });
-
-        Thread thread = new Thread(task);
-        thread.setDaemon(true); // dies when app closes
-        thread.start();
+        
+        pollutionLevelSelectorComboBox.setOnAction(event -> {
+            try{ comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox, pollutionLevelSelectorComboBox); }
+            catch (Exception e){ e.printStackTrace(); }
+        });
     }
     
     private void welcomeButtonPressed(ActionEvent event, BorderPane root) {
@@ -239,7 +248,16 @@ public class MainWindow extends Application
         root.setLeft(createFiltersAndControlsBar());
         DataLoader myLoader = new DataLoader();
         DataSet no2Data = myLoader.loadDataFile("UKAirPollutionData/NO2/mapno22023.csv");
-        map.plotData(no2Data,"All");
+        map.plotData(no2Data, "All");
+    }
+    
+    private void swapMapButton(ActionEvent event, BorderPane root, String text){
+        if (text.equals("Weather")) {
+            liveMap = new InteractiveMap("Weather");
+        }else {
+            liveMap = new InteractiveMap("Pollution");
+        }
+        root.setCenter(liveMap);
     }
     
     private void statsButtonPressed(ActionEvent event, BorderPane root) {
@@ -247,11 +265,14 @@ public class MainWindow extends Application
         root.setLeft(null);
     }
     
-    private void comboBoxSelection(ComboBox<String> yearSelectorComboBox, ComboBox<String> pollutantSelectorComboBox, ComboBox<String> pollutionLevelComboBox) throws Exception {
+    private void comboBoxSelection(
+        ComboBox<String> yearSelectorComboBox, ComboBox<String> pollutantSelectorComboBox, 
+        ComboBox<String> pollutionLevelComboBox
+        ) throws Exception {
         String selectedPollutant = pollutantSelectorComboBox.getValue();
         String selectedYear = yearSelectorComboBox.getValue();
         String selectedPollutionLevel = pollutionLevelComboBox.getValue();
+        root.setCenter(map);
         map.updateMapData(selectedPollutant, selectedYear, selectedPollutionLevel);
-
     }
 }

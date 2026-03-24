@@ -10,55 +10,32 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author (your name)
  * @version (a version number or a date)
  */
-public class PollutionApi
+public class PollutionAPI extends LiveData
 {
     private static final String API_KEY = "8ba6990fa2a1c29023afcbc72b7e9969";
     
-    public PollutionApi() {}
+    public PollutionAPI() {}
 
-    public double[] getAPIResponse(double lat, double lon) throws Exception {
+    private double[] getAPIResponse(double lat, double lon) throws Exception {
 
         String urlString =
         "https://api.openweathermap.org/data/2.5/air_pollution"
         + "?lat=" + lat
         + "&lon=" + lon
         + "&appid=" + API_KEY;
-        
-        System.out.println(urlString);
 
         URL url = new URL(urlString);
 
-        BufferedReader reader =
-        new BufferedReader(new InputStreamReader(url.openStream()));
-
-        String line;
-        StringBuilder result = new StringBuilder();
-
-        while((line = reader.readLine()) != null){
-            result.append(line);
-        }
-
-        reader.close();
-        
-        String jsonString = result.toString();
-        
-        System.out.println(jsonString);
-        
-        double[] parsedValues = parsePollution(jsonString);
-        
-        //for (double value: parsedValues) { 
-            //System.out.println(value); 
-        //}
-        //System.out.println(parsedValues);
+        double[] parsedValues = getParsedData(url);
         
         return parsedValues;
     }
     
-    private double[] parsePollution(String json) throws Exception {
+    public double[] parseData(String jsonString) throws Exception {
 
         ObjectMapper mapper = new ObjectMapper();
     
-        JsonNode root = mapper.readTree(json);
+        JsonNode root = mapper.readTree(jsonString);
     
         JsonNode pollution = root.get("list").get(0);
     
@@ -75,4 +52,8 @@ public class PollutionApi
         return new double[]{pm25, pm10, no2};
     }
     
+    public String getDataAtPoint(double latitude, double longitude) throws Exception {
+        double[] pollutionValues = getAPIResponse(latitude, longitude);
+        return ("PM2.5: " + pollutionValues[0] + "<br>" + "PM10: " + pollutionValues[1] + "<br>" + "NO2: " + pollutionValues[2]);
+    }
 }

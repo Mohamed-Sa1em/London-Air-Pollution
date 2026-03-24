@@ -2,7 +2,6 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * Calculation class is used perform calculations for other classes to reduce redundant methods.
  *
@@ -28,7 +27,7 @@ public class Calculation
     public HashMap<String, Double> findAverageFromAllYears(String pollutant)
     {
         HashMap<String, Double> map = new HashMap<>();
-        	
+            
         for (String year: this.years) {
             double average = findAverageFromSpecificYear(pollutant, year);
             map.put(year, average);
@@ -137,7 +136,7 @@ public class Calculation
         }
         String filePath = "UKAirPollutionData/" + folderName + "/map" + filePrefix + year + suffix + ".csv";
         
-        DataLoader myLoader = new DataLoader();	
+        DataLoader myLoader = new DataLoader();    
         DataSet data = myLoader.loadDataFile(filePath);
         List<DataPoint> dataPoints = data.getData();
         return dataPoints;
@@ -158,8 +157,6 @@ public class Calculation
      * @return the value.System.out.print
      */
     private double findSpecificVal(List<DataPoint> dataPoints, double easting, double northing) {
-        double val;
-        
         for (DataPoint dp: dataPoints) {
             if (easting == dp.x() && northing == dp.y()) {
                 return dp.value();
