@@ -23,6 +23,7 @@ public class MapController extends Pane
 {
     // Variable that holds and display the london.png image
     private ImageView mapBackground;
+    private Calculation calculation;
     
     private final double Max_Easting = 553297;
     private final double Min_Easting = 510394;
@@ -41,6 +42,7 @@ public class MapController extends Pane
         //loading the image
         Image mapImage = new Image("file:assets/London.png");
         mapBackground = new ImageView(mapImage);
+        calculation = new Calculation();
 
         //scaling the image to set the window 
         mapBackground.setFitWidth(1088);
@@ -59,8 +61,8 @@ public class MapController extends Pane
         final double RangeY = Max_Northing - Min_Northing;
         
         List<DataPoint> relevantDataPoints = dataSet.returnRelevantData();
-        double maxPollutionForThisData = returnMaxLevelOfPollution(relevantDataPoints);
-        double meanPollutionForThisData = getMeanPollutionValueForData(relevantDataPoints);
+        double maxPollutionForThisData = calculation.returnMaxLevelOfPollution(relevantDataPoints);
+        double meanPollutionForThisData = calculation.findAverageFromData(relevantDataPoints);
         
         String currentPollutant = dataSet.getPollutant();
         String year = dataSet.getYear();
@@ -155,74 +157,11 @@ public class MapController extends Pane
         DataSet data = getDataForYearAndPollutant(pollutant, year);
         
         List<DataPoint> dataPoints = data.getData();
-        List<DataPoint> relevantDataPoints = returnRelevantData(dataPoints, Min_Easting, Max_Easting, Min_Northing, Max_Northing);
-        double maxValue = returnMaxLevelOfPollution(relevantDataPoints);
-        DataPoint location = getLocationOfMaxValue(relevantDataPoints);
+        List<DataPoint> relevantDataPoints = calculation.findRelevantData(dataPoints);
+        double maxValue = calculation.returnMaxLevelOfPollution(relevantDataPoints);
+        DataPoint location = calculation.getLocationOfMaxValue(relevantDataPoints);
         
         showMaxOnMap(maxValue, location, pollutant, year);
-    }
-    
-    /**
-     * @return maximum pollution value
-     */
-    private double returnMaxLevelOfPollution(List<DataPoint> dataPoints) {
-        double max = 0;
-        for (DataPoint dataPoint: dataPoints) {
-            if (max < dataPoint.value()) {
-                max = dataPoint.value();
-            }
-        }
-        
-        return max;
-    }
-    
-    /**
-     * @return DataPoint of the max pollutant value
-     */
-    private DataPoint getLocationOfMaxValue(List<DataPoint> dataPoints) {
-        double max = 0;
-        DataPoint loc = null;
-        for (DataPoint dataPoint: dataPoints) {
-            if (max < dataPoint.value()) {
-                max = dataPoint.value();
-                loc = dataPoint;
-            }
-        }
-        
-        return loc;
-    }
-    
-    /**
-     * @return mean of the data
-     */
-    private double getMeanPollutionValueForData(List<DataPoint> dataPoints) {
-        double sum = 0;
-        for (DataPoint dataPoint: dataPoints) {
-            sum += dataPoint.value();
-        }
-        
-        return sum / dataPoints.size();
-    }
-    
-    /**
-     * Returns the data points that are relevant to a certain area
-     * @return list of all the relevant data points
-     */
-    private List<DataPoint> returnRelevantData(
-        List<DataPoint> dataPoints, double MinEasting, double MaxEasting, double MinNorthing, double MaxNorthing
-        ) {
-        ArrayList<DataPoint> relevantDataPoints = new ArrayList<DataPoint>();
-        for (DataPoint dataPoint: dataPoints) {
-            double This_Easting = dataPoint.x();
-            double This_Northing = dataPoint.y();
-            if (This_Easting >= MinEasting && This_Easting <= MaxEasting &&
-                This_Northing >= MinNorthing && This_Northing <= MaxNorthing
-            ) {
-                relevantDataPoints.add(dataPoint);
-            }
-        }
-        
-        return relevantDataPoints;
     }
     
     /**

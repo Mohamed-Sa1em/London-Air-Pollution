@@ -54,7 +54,8 @@ public class MainWindow extends Application
         root.setTop(createMenuBar(root));
 
         // JavaFX must have a Scene (window content) inside a Stage (window)
-        Scene scene = new Scene(root, 1200, 728);
+        Scene scene = new Scene(root, 1220, 760);
+
         scene.getStylesheets().add("styles.css");
         stage.setResizable(false); // makes the window non resizeable by the user
         stage.setTitle("Air Pollution Monitor");

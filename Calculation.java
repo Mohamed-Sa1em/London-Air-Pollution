@@ -143,6 +143,36 @@ public class Calculation
     }
     
     /**
+     * @return maximum pollution value
+     */
+    public double returnMaxLevelOfPollution(List<DataPoint> dataPoints) {
+        double max = 0;
+        for (DataPoint dataPoint: dataPoints) {
+            if (max < dataPoint.value()) {
+                max = dataPoint.value();
+            }
+        }
+        
+        return max;
+    }
+    
+    /**
+     * @return DataPoint of the max pollutant value
+     */
+    public DataPoint getLocationOfMaxValue(List<DataPoint> dataPoints) {
+        double max = 0;
+        DataPoint loc = null;
+        for (DataPoint dataPoint: dataPoints) {
+            if (max < dataPoint.value()) {
+                max = dataPoint.value();
+                loc = dataPoint;
+            }
+        }
+        
+        return loc;
+    }
+    
+    /**
      * Breaks the year range to return a sublist
      * @return a sublist of years
      */
