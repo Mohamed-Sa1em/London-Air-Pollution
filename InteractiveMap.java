@@ -1,6 +1,7 @@
 import com.sothawo.mapjfx.*;
 import com.sothawo.mapjfx.event.MapViewEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.*;
 import java.awt.event.ActionEvent;
 
 /**
@@ -46,7 +47,6 @@ public class InteractiveMap extends StackPane {
     }
     
     private void initialiseMap(Coordinate londonCenter) {
-        // Now it is safe to add the marker
         clickedMark = Marker.createProvided(Marker.Provided.RED);
         clickedMark.setPosition(londonCenter);
         clickedMark.setVisible(true);

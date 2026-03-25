@@ -66,7 +66,7 @@ public class MapController extends Pane
         
         String currentPollutant = dataSet.getPollutant();
         String year = dataSet.getYear();
-
+        
         PollutantThreshold thresholds = PollutantThreshold.fromString(currentPollutant);
         setThresholdValues(meanPollutionForThisData, thresholds);
         

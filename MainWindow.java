@@ -55,8 +55,16 @@ public class MainWindow extends Application
 
         // JavaFX must have a Scene (window content) inside a Stage (window)
         Scene scene = new Scene(root, 1220, 760);
-
         scene.getStylesheets().add("styles.css");
+        Font.loadFont(getClass().getResourceAsStream("/assets/Roboto-Condensed.ttf"), 10);
+        Font.loadFont(getClass().getResourceAsStream("/assets/Roboto-BoldCondensed.ttf"), 10);
+        
+        for (String name : Font.getFontNames()) {
+            if (name.contains("Roboto")) {
+                System.out.println(name);
+            }
+        }
+
         stage.setResizable(false); // makes the window non resizeable by the user
         stage.setTitle("Air Pollution Monitor");
         stage.setScene(scene);
@@ -93,7 +101,6 @@ public class MainWindow extends Application
             try{ dataMapButtonPressed(event, root); }
             catch (Exception e){ e.printStackTrace(); }
         });
-        dataMapButton.setFont(new Font(20));
         dataMapButton.setMinWidth(dataMapButton.getPrefWidth());
         dataMapButton.getStyleClass().add("nav-bar-button");
 
@@ -124,7 +131,7 @@ public class MainWindow extends Application
             "2022",
             "2023");
 
-        yearSelectorComboBox.getSelectionModel().selectFirst();
+        yearSelectorComboBox.getSelectionModel().selectLast();
 
 
         Label pollutantSelectionLabel = new Label("Select Pollutant");
@@ -161,12 +168,14 @@ public class MainWindow extends Application
             String text = pollutionLiveButton.getText();
             swapMapButton(event, root, text);
         });
+        pollutionLiveButton.getStyleClass().add("filters-button");
         
         Button weatherLiveButton = new Button("Weather");
         weatherLiveButton.setOnAction(event -> {
             String text = weatherLiveButton.getText();
             swapMapButton(event, root, text);
         });
+        weatherLiveButton.getStyleClass().add("filters-button");
 
         //Handles the change of the year and the pollutant
         //Loading the new dataset
