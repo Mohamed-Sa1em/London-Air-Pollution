@@ -92,7 +92,7 @@ public class StatsWindow extends BorderPane
         VBox root = new VBox(100);
         root.setAlignment(Pos.CENTER);
         
-        Label coulumnTitleLabel = new Label("Select the Pollutant,\n starting Year and ending Year");
+        Label coulumnTitleLabel = new Label("Select the Pollutant, starting Year and ending Year \n (The years MUST be different)");
         coulumnTitleLabel.setFont(Font.font("Arial",FontWeight.BOLD, 20));
         
         // for the year-selection side of the screen
@@ -277,6 +277,17 @@ public class StatsWindow extends BorderPane
         String selectedPollutant = pollutant.getValue();
         String startYear = start.getValue();
         String endYear = end.getValue();
+        
+        // checks if the date range selected is valid
+        if (Integer.valueOf(startYear) >= Integer.valueOf(endYear)) {
+            Alert incorrectDateAlert = new Alert(Alert.AlertType.ERROR);
+            incorrectDateAlert.setTitle("Error");
+            incorrectDateAlert.setHeaderText("Date range selected is not valid");
+            
+            incorrectDateAlert.showAndWait();
+            this.avgPollutantScreen();
+            return;
+        }
         
         this.setCenter(map);
         map.showAverageForTimePeriod(selectedPollutant, startYear, endYear);

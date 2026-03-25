@@ -58,14 +58,23 @@ public class MapController extends Pane
     {
         final double RangeX = Max_Easting - Min_Easting;
         final double RangeY = Max_Northing - Min_Northing;
-        
-        List<DataPoint> relevantDataPoints = dataSet.returnRelevantData();
-        double maxPollutionForThisData = calculation.returnMaxLevelOfPollution(relevantDataPoints);
-        double meanPollutionForThisData = calculation.findAverageFromData(relevantDataPoints);
-        
+    
         String currentPollutant = dataSet.getPollutant();
         String year = dataSet.getYear();
 
+        List<DataPoint> relevantDataPoints = dataSet.returnRelevantData();
+        relevantDataCalc(relevantDataPoints, currentPollutant, year, filterLevel);
+    
+    }
+    
+    /**
+     * Calculates relevant information about the datapoints and proceeds to display them on the map.findAverageFromRangeOfYears
+     */
+    private void relevantDataCalc(List<DataPoint> relevantDataPoints, String currentPollutant, String year, String filterLevel) {
+        double maxPollutionForThisData = calculation.returnMaxLevelOfPollution(relevantDataPoints);
+        double meanPollutionForThisData = calculation.findAverageFromData(relevantDataPoints);
+        
+        
         PollutantThreshold thresholds = PollutantThreshold.fromString(currentPollutant);
         setThresholdValues(meanPollutionForThisData, thresholds);
         
@@ -73,7 +82,6 @@ public class MapController extends Pane
         for(DataPoint dataPoint : relevantDataPoints){
             showOneDataPoint(dataPoint, thresholds, currentPollutant, year, filterLevel);
         }
-    
     }
     
     
@@ -162,6 +170,9 @@ public class MapController extends Pane
         showMaxOnMap(maxValue, location, pollutant, year);
     }
     
+    /**
+     * Finds the relevant datapoints for the area within the time period selected
+     */
     public void showAverageForTimePeriod(String pollutant, String start, String end) {
         List<String> years = new ArrayList<>(List.of("2018", "2019", "2020", "2021", "2022", "2023"));
         List<String> middleYears = years.subList(years.indexOf(start), years.indexOf(end)+1);
@@ -180,29 +191,10 @@ public class MapController extends Pane
         
         Map<DataPoint, Double> averageMap = calculation.mergeMaps(gridToDataPoint, gridcodeAverage);
         
-        plotAverageData(pollutant, averageMap, middleYears);
-    }
-    
-    private void plotAverageData(String pollutant, Map<DataPoint, Double> averageMap, List<String> years) {
-        Set<DataPoint> set = averageMap.keySet();
+        List<DataPoint> newDataPoints = calculation.returnNewDataPoints(averageMap);
         
-        for(DataPoint dp: set) {            
-            double This_Easting = dp.x();
-            double This_Northing = dp.y();
-            double This_Average= averageMap.get(dp);
-            
-            double baseOpacity = 0.15;
-            double translated_X = (((This_Easting - Min_Easting)/RangeX)* mapBackground.getBoundsInLocal().getWidth());
-            double translated_Y = (((Max_Northing - This_Northing)/RangeY)* mapBackground.getBoundsInLocal().getHeight());
-    
-            Rectangle marker = new Rectangle(translated_X,translated_Y, 26.5, 26.5);
-            
-            marker.setOpacity(baseOpacity);
-            marker.setFill(Color.GREEN);
-
-            setupHoveringTool(dp, pollutant, This_Average, years.get(0) + " to " + years.get(years.size()-1), marker, baseOpacity);
-            this.getChildren().add(marker);
-        }
+        relevantDataCalc(newDataPoints, pollutant,  middleYears.get(0) + " to " + middleYears.get(middleYears.size()-1) , "All");
+        
     }
     
     /**

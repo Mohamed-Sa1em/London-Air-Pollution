@@ -34,22 +34,6 @@ public class Calculation
     }
     
     /**
-     * Finds an average for a pollutant from a range years
-     * @return a hashmap with year as key and the average as the value.
-     */
-    public HashMap<String, Double> findAverageFromRangeOfYears(String pollutant, String start, String end) {
-        HashMap<String, Double> map = new HashMap<>();
-
-        List<String> timePeriod = findMiddleYears(start, end);
-        
-        for (String year: timePeriod) {
-            double average = findAverageFromSpecificYear(pollutant, year);
-            map.put(year, average);
-        }
-        return map;
-    }
-    
-    /**
      * Finds an average for a pollutant from a specific year.
      * @return average
      */
@@ -63,27 +47,6 @@ public class Calculation
     }
     
     /**
-     * Finds the value for a pollutant from a specific location from all years.
-     * @return a hashmap with year as key and the pollutant value as the value.
-     */
-    public HashMap<String, Double> findAverageFromLocation(String pollutant,String eastingStr, String northingStr) {
-        HashMap<String, Double> map = new HashMap<>();
-        
-        double easting = Integer.valueOf(eastingStr);
-        double northing = Integer.valueOf(northingStr);
-        
-        double sum = 0;
-        
-        for (String year: this.years) {
-            DataSet data = returnDataSet(pollutant, year);
-            List<DataPoint> dataPoints = data.returnRelevantData();
-            double specificVal = findSpecificVal(dataPoints, easting, northing);
-            map.put(year, specificVal);
-        }
-        return map;
-    }
-    
-    /**
      * Finds an average from a list of datapoints
      * @return the average
      */
@@ -94,6 +57,20 @@ public class Calculation
         }
         
         return sum / data.size();
+    }
+    
+    /**
+     * Turns a map of Datapoints, Double into a list of new Datapoints.
+     */
+    public List<DataPoint> returnNewDataPoints(Map<DataPoint, Double> map) {
+        List<DataPoint> result = new ArrayList<>();
+        
+        Set<DataPoint> datapoints = map.keySet();
+        for (DataPoint dp: datapoints) {
+            result.add(new DataPoint(dp.gridCode(), dp.x(), dp.y(), map.get(dp)));
+        }
+        
+        return result;
     }
     
     /**
@@ -145,6 +122,9 @@ public class Calculation
         return loc;
     }
     
+    /**
+     * Adds the total sum of a specific location in order to calculate average later on.
+     */
     public void addSum(Map<Integer, Double[]> averages, Map<Integer, DataPoint> lookupMap, Integer gridcode){
         if (averages.get(gridcode) != null){
             Double[] array = averages.get(gridcode);
@@ -158,6 +138,9 @@ public class Calculation
         }
     }
     
+    /**
+     * Merges two maps based on their key's.
+     */
     public Map<DataPoint, Double> mergeMaps(Map<Integer, DataPoint> gridToDataPoint, Map<Integer, Double[]> gridcodeAverage) {
         Map<DataPoint, Double> result = new HashMap<>();
         
@@ -173,7 +156,6 @@ public class Calculation
         
         return result;
     }
-    
     
     /**
      * Breaks the year range to return a sublist
