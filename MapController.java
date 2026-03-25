@@ -76,7 +76,7 @@ public class MapController extends Pane
     private void relevantDataCalc(List<DataPoint> relevantDataPoints, String currentPollutant, String year, String filterLevel) {
         double maxPollutionForThisData = calculation.returnMaxLevelOfPollution(relevantDataPoints);
         double meanPollutionForThisData = calculation.findAverageFromData(relevantDataPoints);
-        
+  
         PollutantThreshold thresholds = PollutantThreshold.fromString(currentPollutant);
         setThresholdValues(meanPollutionForThisData, thresholds);
         

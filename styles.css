@@ -1,7 +1,12 @@
 /*
 Author: Mohammed Aziz
-Version: 1.0
+Version: 1.3
 */
+
+.root {
+    -fx-font-family: "Roboto Condensed"; 
+    -fx-font-smoothing-type: lcd;
+}
 
 .nav-bar {
     -fx-border-color: black;
@@ -21,7 +26,7 @@ Version: 1.0
     -fx-border-radius: 8px;
     -fx-padding: 10px 20px;
     -fx-font-size: 14px;
-    -fx-font-weight: bold;
+    -fx-font-family: "Roboto Bold Condensed";
     -fx-cursor: hand;
 }
 
@@ -43,6 +48,25 @@ Version: 1.0
     -fx-pref-width: 150px;
 }
 
+.filters-button {
+    -fx-background-color: #61995C;
+    -fx-text-fill: #ffffff;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 5px;
+    -fx-font-size: 14px;
+}
+
+.filters-button:hover {
+    -fx-underline: true;
+}
+
+.filters-button:pressed {
+    -fx-underline: true;
+    -fx-background-color: #4c7546;
+    -fx-text-fill: #EBEBEB;
+}
+
 .stats-bar {
     -fx-border-color: black; 
     -fx-border-width: 0 2 0 0;
@@ -56,7 +80,7 @@ Version: 1.0
 .bar-title {
     -fx-padding: 5px 0px 20px 0px;
     -fx-font-size: 14px;
-    -fx-font-weight: bold;
+    -fx-font-family: "Roboto Bold Condensed";
     -fx-wrap-text: true;
 }
 
@@ -66,21 +90,33 @@ Version: 1.0
 }
 
 .welcome-title {
-    -fx-underline: true;
-    -fx-font-family: sans-serif;
-    -fx-font-size: 40;
+    -fx-font-family: "Roboto Bold Condensed";
+    -fx-font-size: 80;
     -fx-padding: 10 0 10 0;
+    -fx-text-fill: #ffffff;
 }
 
 .welcome-body {
     -fx-font-size: 20;
-    -fx-font-family: sans-serif;
-    -fx-padding: 5 0 5 0;
+    -fx-padding: 5 5 5 5;
     -fx-wrap-text: true;
 }
 
+.image-descriptor {
+    -fx-font-size: 30;
+    -fx-padding: 5 10 5 10;
+    -fx-wrap-text: true;
+}
+
+.content-bubble {
+    -fx-background-color: #FFD4C2;
+    -fx-background-radius: 20;
+    -fx-padding: 40;
+}
+
 .separator {
-    -fx-padding: 10 0 10 0;
+    -fx-padding: 10 20 10 20;
+    -fx-background-color: #fff1eb;
 }
 
 .separator .line {
@@ -91,7 +127,6 @@ Version: 1.0
 
 .welcome-subtitle {
     -fx-underline: true;
-    -fx-font-family: sans-serif;
     -fx-font-size: 30;
     -fx-padding: 10 0 10 0;
 }
@@ -152,7 +187,7 @@ Version: 1.0
     -fx-text-fill: #4c7546;
     -fx-underline: false;
     -fx-font-size: 14px;
-    -fx-font-weight: bold;
+    -fx-font-family: "Roboto Bold Condensed";
     -fx-wrap-text: true;
     -fx-cursor: hand;
     -fx-min-width: 150px;
@@ -170,13 +205,4 @@ Version: 1.0
 .stats-button:selected {
     -fx-background-color: #4c7546;
     -fx-text-fill: #fff1eb;
-}
-
-.button-special {
-    -fx-background-radius: 8px;
-    -fx-border-radius: 8px;
-    -fx-padding: 10px 20px;
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-cursor: hand;
 }
