@@ -186,7 +186,7 @@ public class Calculation
      * Finds a specific value from a data point
      * @return the value.System.out.print
      */
-    private double findSpecificVal(List<DataPoint> dataPoints, double easting, double northing) {
+    public double findSpecificVal(List<DataPoint> dataPoints, double easting, double northing) {
         for (DataPoint dp: dataPoints) {
             if (easting == dp.x() && northing == dp.y()) {
                 return dp.value();
