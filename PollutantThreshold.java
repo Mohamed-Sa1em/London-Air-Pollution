@@ -7,8 +7,6 @@
  */
 public enum PollutantThreshold
 {
-    //inital values up for change
-    //pm25 values is not right  as they are all green rn for later years 
     NO2(0, 0, 0),
     PM10(0, 0, 0),   
     PM25(0, 0, 0);

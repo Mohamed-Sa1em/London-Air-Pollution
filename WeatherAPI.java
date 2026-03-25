@@ -53,8 +53,6 @@ public class WeatherAPI extends LiveData
         JsonNode wind = root.get("wind");
         double windSpeed = wind.get("speed").asDouble();
         
-        //System.out.println(pm25 + " " + pm10 + " " + no2);
-        
         return new double[]{temperature, humidity, windSpeed};
     }
     

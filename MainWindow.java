@@ -62,8 +62,6 @@ public class MainWindow extends Application
         stage.setScene(scene);
 
         root.setCenter(new WelcomeWindow());
-        //MapController myPollutionMap = new MapController();
-        //root.setCenter(myPollutionMap);
 
         // Show the Stage (window)
         stage.show();
@@ -248,7 +246,7 @@ public class MainWindow extends Application
         root.setCenter(map);
         root.setLeft(createFiltersAndControlsBar());
         DataLoader myLoader = new DataLoader();
-        DataSet no2Data = myLoader.loadDataFile("UKAirPollutionData/NO2/mapno22023.csv");
+        DataSet no2Data = myLoader.loadDataFile("UKAirPollutionData/NO2/mapno22018.csv");
         map.plotData(no2Data, "All");
     }
     

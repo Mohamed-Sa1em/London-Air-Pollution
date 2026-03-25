@@ -47,7 +47,6 @@ public class PollutionAPI extends LiveData
         double pm10 = components.get("pm10").asDouble();
         double no2 = components.get("no2").asDouble();
         
-        //System.out.println(pm25 + " " + pm10 + " " + no2);
         
         return new double[]{pm25, pm10, no2};
     }

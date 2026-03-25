@@ -9,7 +9,6 @@ import java.io.*;
 import javafx.application.Platform;
 import java.util.*;
 
-
 /**
  * MapController class is soley responsibly for rendering the map of london so far.
  * Eventually it will act as a canvas where we "allocate" and display the pollution data points 
@@ -73,7 +72,6 @@ public class MapController extends Pane
     private void relevantDataCalc(List<DataPoint> relevantDataPoints, String currentPollutant, String year, String filterLevel) {
         double maxPollutionForThisData = calculation.returnMaxLevelOfPollution(relevantDataPoints);
         double meanPollutionForThisData = calculation.findAverageFromData(relevantDataPoints);
-        
         
         PollutantThreshold thresholds = PollutantThreshold.fromString(currentPollutant);
         setThresholdValues(meanPollutionForThisData, thresholds);
