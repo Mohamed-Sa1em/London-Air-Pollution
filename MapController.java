@@ -5,10 +5,9 @@ import javafx.scene.shape.*;
 import javafx.scene.paint.Color;
 import javafx.scene.control.*;
 import javafx.util.Duration;
-import java.util.List;
-import java.util.ArrayList;
 import java.io.*;
 import javafx.application.Platform;
+import java.util.*;
 
 
 /**
@@ -59,14 +58,23 @@ public class MapController extends Pane
     {
         final double RangeX = Max_Easting - Min_Easting;
         final double RangeY = Max_Northing - Min_Northing;
-        
-        List<DataPoint> relevantDataPoints = dataSet.returnRelevantData();
-        double maxPollutionForThisData = calculation.returnMaxLevelOfPollution(relevantDataPoints);
-        double meanPollutionForThisData = calculation.findAverageFromData(relevantDataPoints);
-        
+    
         String currentPollutant = dataSet.getPollutant();
         String year = dataSet.getYear();
 
+        List<DataPoint> relevantDataPoints = dataSet.returnRelevantData();
+        relevantDataCalc(relevantDataPoints, currentPollutant, year, filterLevel);
+    
+    }
+    
+    /**
+     * Calculates relevant information about the datapoints and proceeds to display them on the map.findAverageFromRangeOfYears
+     */
+    private void relevantDataCalc(List<DataPoint> relevantDataPoints, String currentPollutant, String year, String filterLevel) {
+        double maxPollutionForThisData = calculation.returnMaxLevelOfPollution(relevantDataPoints);
+        double meanPollutionForThisData = calculation.findAverageFromData(relevantDataPoints);
+        
+        
         PollutantThreshold thresholds = PollutantThreshold.fromString(currentPollutant);
         setThresholdValues(meanPollutionForThisData, thresholds);
         
@@ -74,7 +82,6 @@ public class MapController extends Pane
         for(DataPoint dataPoint : relevantDataPoints){
             showOneDataPoint(dataPoint, thresholds, currentPollutant, year, filterLevel);
         }
-    
     }
     
     
@@ -156,12 +163,38 @@ public class MapController extends Pane
     public void showHighestPollutant(String year, String pollutant) {
         DataSet data = getDataForYearAndPollutant(pollutant, year);
         
-        List<DataPoint> dataPoints = data.getData();
-        List<DataPoint> relevantDataPoints = calculation.findRelevantData(dataPoints);
+        List<DataPoint> relevantDataPoints = data.returnRelevantData();
         double maxValue = calculation.returnMaxLevelOfPollution(relevantDataPoints);
         DataPoint location = calculation.getLocationOfMaxValue(relevantDataPoints);
         
         showMaxOnMap(maxValue, location, pollutant, year);
+    }
+    
+    /**
+     * Finds the relevant datapoints for the area within the time period selected
+     */
+    public void showAverageForTimePeriod(String pollutant, String start, String end) {
+        List<String> years = new ArrayList<>(List.of("2018", "2019", "2020", "2021", "2022", "2023"));
+        List<String> middleYears = years.subList(years.indexOf(start), years.indexOf(end)+1);
+        
+        Map<Integer, Double[]> gridcodeAverage = new HashMap<>();
+        Map<Integer, DataPoint> gridToDataPoint = new HashMap<>();
+        
+        for(String year: middleYears) {
+            List<DataPoint> dataPoints = getDataForYearAndPollutant(pollutant, year).returnRelevantData();
+            for (DataPoint dp: dataPoints) {
+                int key = dp.gridCode();
+                gridToDataPoint.put(key, dp);
+                calculation.addSum(gridcodeAverage, gridToDataPoint, key);
+            }
+        }
+        
+        Map<DataPoint, Double> averageMap = calculation.mergeMaps(gridToDataPoint, gridcodeAverage);
+        
+        List<DataPoint> newDataPoints = calculation.returnNewDataPoints(averageMap);
+        
+        relevantDataCalc(newDataPoints, pollutant,  middleYears.get(0) + " to " + middleYears.get(middleYears.size()-1) , "All");
+        
     }
     
     /**

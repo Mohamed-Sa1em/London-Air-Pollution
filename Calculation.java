@@ -1,6 +1,4 @@
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Calculation class is used perform calculations for other classes to reduce redundant methods.
@@ -36,77 +34,16 @@ public class Calculation
     }
     
     /**
-     * Finds an average for a pollutant from a range years
-     * @return a hashmap with year as key and the average as the value.
-     */
-    public HashMap<String, Double> findAverageFromRangeOfYears(String pollutant, String start, String end) {
-        HashMap<String, Double> map = new HashMap<>();
-
-        List<String> timePeriod = findMiddleYears(start, end);
-        
-        for (String year: timePeriod) {
-            double average = findAverageFromSpecificYear(pollutant, year);
-            map.put(year, average);
-        }
-        return map;
-    }
-    
-    /**
      * Finds an average for a pollutant from a specific year.
      * @return average
      */
     public double findAverageFromSpecificYear(String pollutant, String year) {
-        List<DataPoint> dataPoints = returnDataSet(pollutant, year);
+        DataSet data = returnDataSet(pollutant, year);
         
-        List<DataPoint> relevantData = findRelevantData(dataPoints);
+        List<DataPoint> relevantData = data.returnRelevantData();
         
         double average = findAverageFromData(relevantData);
         return average;
-    }
-    
-    /**
-     * Finds the value for a pollutant from a specific location from all years.
-     * @return a hashmap with year as key and the pollutant value as the value.
-     */
-    public HashMap<String, Double> findAverageFromLocation(String pollutant,String eastingStr, String northingStr) {
-        HashMap<String, Double> map = new HashMap<>();
-        
-        double easting = Integer.valueOf(eastingStr);
-        double northing = Integer.valueOf(northingStr);
-        
-        double sum = 0;
-        
-        for (String year: this.years) {
-            List<DataPoint> dataPoints = returnDataSet(pollutant, year);
-            List<DataPoint> data = findRelevantData(dataPoints);
-            double specificVal = findSpecificVal(data, easting, northing);
-            map.put(year, specificVal);
-        }
-        return map;
-    }
-    
-    /**
-     * Finds the relevant data points from a larger list of data
-     * @return list of relevant points
-     */
-    public List<DataPoint> findRelevantData(List<DataPoint> data) {
-        double Max_Easting = 553297;
-        double Min_Easting = 510394;
-        double Max_Northing = 193305;
-        double Min_Northing = 168504;
-        
-        ArrayList<DataPoint> relevant = new ArrayList<DataPoint>();
-        for (DataPoint dataPoint: data) {
-            double This_Easting = dataPoint.x();
-            double This_Northing = dataPoint.y();
-            if (This_Easting >= Min_Easting && This_Easting <= Max_Easting &&
-                This_Northing >= Min_Northing && This_Northing <= Max_Northing
-            ) {
-                relevant.add(dataPoint);
-            }
-        }
-        
-        return relevant;
     }
     
     /**
@@ -123,10 +60,24 @@ public class Calculation
     }
     
     /**
+     * Turns a map of Datapoints, Double into a list of new Datapoints.
+     */
+    public List<DataPoint> returnNewDataPoints(Map<DataPoint, Double> map) {
+        List<DataPoint> result = new ArrayList<>();
+        
+        Set<DataPoint> datapoints = map.keySet();
+        for (DataPoint dp: datapoints) {
+            result.add(new DataPoint(dp.gridCode(), dp.x(), dp.y(), map.get(dp)));
+        }
+        
+        return result;
+    }
+    
+    /**
      * Loads in the required file to retrieve the data points from it
      * @return a list of datapoints from the file
      */
-    private List<DataPoint> returnDataSet(String pollutant, String year){
+    private DataSet returnDataSet(String pollutant, String year){
         String folderName = pollutant.toUpperCase();
         String filePrefix = pollutant.replace(".", "").toLowerCase();
         
@@ -138,8 +89,7 @@ public class Calculation
         
         DataLoader myLoader = new DataLoader();    
         DataSet data = myLoader.loadDataFile(filePath);
-        List<DataPoint> dataPoints = data.getData();
-        return dataPoints;
+        return data;
     }
     
     /**
@@ -170,6 +120,41 @@ public class Calculation
         }
         
         return loc;
+    }
+    
+    /**
+     * Adds the total sum of a specific location in order to calculate average later on.
+     */
+    public void addSum(Map<Integer, Double[]> averages, Map<Integer, DataPoint> lookupMap, Integer gridcode){
+        if (averages.get(gridcode) != null){
+            Double[] array = averages.get(gridcode);
+            double currentSum = array[0];
+            double newSum = currentSum + lookupMap.get(gridcode).value();
+            array[0] = newSum;
+            array[1] += 1;
+            
+        } else {
+            averages.put(gridcode, new Double[]{lookupMap.get(gridcode).value(), 1.0});
+        }
+    }
+    
+    /**
+     * Merges two maps based on their key's.
+     */
+    public Map<DataPoint, Double> mergeMaps(Map<Integer, DataPoint> gridToDataPoint, Map<Integer, Double[]> gridcodeAverage) {
+        Map<DataPoint, Double> result = new HashMap<>();
+        
+        for (Integer gridcode: gridcodeAverage.keySet()) {
+            DataPoint dp = gridToDataPoint.get(gridcode);
+            Double[] stats = gridcodeAverage.get(gridcode);
+            
+            if (dp != null && stats != null && stats[1] != 0) {
+                double calculatedAverage = stats[0] / stats[1];
+                result.put(dp, calculatedAverage);
+            }
+        }
+        
+        return result;
     }
     
     /**
