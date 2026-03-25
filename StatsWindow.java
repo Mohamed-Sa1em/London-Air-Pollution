@@ -281,8 +281,7 @@ public class StatsWindow extends BorderPane
         // checks if the date range selected is valid
         if (Integer.valueOf(startYear) >= Integer.valueOf(endYear)) {
             Alert incorrectDateAlert = new Alert(Alert.AlertType.ERROR);
-            incorrectDateAlert.setTitle("Error");
-            incorrectDateAlert.setHeaderText("Date range selected is not valid");
+            incorrectDateAlert.setContentText("Date range selected is not valid");
             
             incorrectDateAlert.showAndWait();
             this.avgPollutantScreen();

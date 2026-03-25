@@ -23,7 +23,6 @@ public class DataLoader
      */
     public DataSet loadDataFile(String fileName) 
     {
-        System.out.println("Loading file " + fileName + "...");
         
         URL url = getClass().getResource(fileName);
         try (BufferedReader br = new BufferedReader(new FileReader(new File(url.toURI()).getAbsolutePath()))) {
@@ -46,7 +45,6 @@ public class DataLoader
                 String[] values = line.split(COMMA_DELIMITER);
                 dataSet.addData(values);
             }
-            System.out.println("Loading file... done.");
             return dataSet;
         }        
         catch(IOException | URISyntaxException e) {
