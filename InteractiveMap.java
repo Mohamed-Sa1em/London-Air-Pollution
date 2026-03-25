@@ -6,8 +6,8 @@ import java.awt.event.ActionEvent;
 /**
  * Write a description of class InteractiveMap here.
  *
- * @author (your name)
- * @version (a version number or a date)
+ * @author Mohammed Aziz
+ * @version 1.0
  */
 public class InteractiveMap extends StackPane {
     private MapView mapView;

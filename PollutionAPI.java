@@ -7,8 +7,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Write a description of class PollutionApi here.
  *
- * @author (your name)
- * @version (a version number or a date)
+ * @author Zubair Abdul Matin
+ * @version 1.0
  */
 public class PollutionAPI extends LiveData
 {

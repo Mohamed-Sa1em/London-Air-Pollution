@@ -14,7 +14,7 @@ import java.util.*;
  * Eventually it will act as a canvas where we "allocate" and display the pollution data points 
  *
  *
- * @author Mohamed Salim
+ * @author Mohamed Salem
  * @version 1.2
  */
 public class MapController extends Pane

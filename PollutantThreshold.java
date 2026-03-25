@@ -2,7 +2,7 @@
 /**
  * Enumeration class PollutantThreshold - holds the values for the pollutant thresholds
  *
- * @author Zubair Abdul Matin
+ * @author Mohamed Salem
  * @version 1.0
  */
 public enum PollutantThreshold
