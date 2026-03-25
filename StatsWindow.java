@@ -92,15 +92,10 @@ public class StatsWindow extends BorderPane
         VBox root = new VBox(100);
         root.setAlignment(Pos.CENTER);
         
-        HBox column = new HBox(250);
-        column.setAlignment(Pos.CENTER);
-        
         Label coulumnTitleLabel = new Label("Select the Pollutant,\n starting Year and ending Year");
         coulumnTitleLabel.setFont(Font.font("Arial",FontWeight.BOLD, 20));
         
         // for the year-selection side of the screen
-        VBox pollutantAndYearCoulmn = new VBox(75);
-        pollutantAndYearCoulmn.setAlignment(Pos.CENTER);
         
         HBox yearBar = new HBox(100);
         yearBar.setAlignment(Pos.CENTER);
@@ -142,36 +137,12 @@ public class StatsWindow extends BorderPane
         
 
         Button selectButton = new Button("Select");
-        selectButton.setOnAction(selectionEvent -> {makePeriodGraph(pollutantSelectorComboBox, startingYearSelectorComboBox, endingYearSelectorComboBox);});
+        selectButton.setOnAction(selectionEvent -> {findAverageValues(pollutantSelectorComboBox, startingYearSelectorComboBox, endingYearSelectorComboBox);});
         
-        Label orLabel = new Label("OR");
-        orLabel.setFont(Font.font("Arial",FontWeight.BOLD, 20));
-        
-        // for the grid-coord selection area of the screen
-        VBox coordColumn = new VBox(100);
-        coordColumn.setAlignment(Pos.CENTER);
-        
-        Label mapText = new Label("Enter Easting and Northing:");
-        mapText.setFont(Font.font("Arial",FontWeight.BOLD, 20));
-        
-        TextField eastingCoord = new TextField();
-        eastingCoord.setPromptText("Enter Easting");
-        
-        TextField northingCoord = new TextField();
-        northingCoord.setPromptText("Enter Northing");
-        
-        Button selectCoord = new Button("Select Coord");
-        selectCoord.setOnAction(actionEvent -> {gridSelection(eastingCoord.getText(), northingCoord.getText());});
         
         yearBar.getChildren().addAll(startingYearSelectorComboBox, endingYearSelectorComboBox);
         
-        pollutantAndYearCoulmn.getChildren().addAll(coulumnTitleLabel, pollutantSelectorComboBox, yearBar, selectButton);
-        
-        coordColumn.getChildren().addAll(eastingCoord, northingCoord, selectCoord);
-        
-        column.getChildren().addAll(pollutantAndYearCoulmn, orLabel, coordColumn);
-        
-        root.getChildren().addAll(column);
+        root.getChildren().addAll(coulumnTitleLabel, pollutantSelectorComboBox, yearBar, selectButton);
         
         this.setCenter(root);
     }
@@ -300,26 +271,14 @@ public class StatsWindow extends BorderPane
     }
     
     /**
-     * Draws a graph for a specific location from the data.
-     */
-    private void gridSelection(String easting, String northing) {
-        Graph graph = new Graph(true, easting, northing);
-        this.setCenter(graph.returnLineChart());
-    }
-    
-    /**
      * Draws a graph for a pollutant for a range of years.
      */
-    private void makePeriodGraph(ComboBox<String> pollutant, ComboBox<String> start, ComboBox<String> end) {
+    private void findAverageValues(ComboBox<String> pollutant, ComboBox<String> start, ComboBox<String> end) {
         String selectedPollutant = pollutant.getValue();
         String startYear = start.getValue();
         String endYear = end.getValue();
         
-        if (Integer.valueOf(startYear) < Integer.valueOf(endYear) ) {
-            random = new Graph (selectedPollutant, startYear, endYear, true);
-            this.setCenter(random.returnLineChart());
-        } else {
-            this.setCenter(new Label("Invalid Date"));
-        }
+        this.setCenter(map);
+        map.showAverageForTimePeriod(selectedPollutant, startYear, endYear);
     }
 }
