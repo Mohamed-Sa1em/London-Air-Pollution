@@ -59,6 +59,23 @@ public class Calculation
         return sum / data.size();
     }
     
+    public List<DataPoint> findRelevantData(List<DataPoint> dataPoints) {
+        int maxEasting = 553297;
+        int minEasting = 510394;
+        int maxNorthing = 193305;
+        int minNorthing = 168504;
+        
+        List<DataPoint> newDataPoints = new ArrayList<DataPoint>();
+        
+        for (DataPoint dataPoint: dataPoints) {
+            if (dataPoint.x() >= minEasting && dataPoint.x() <= maxEasting && dataPoint.y() >= minNorthing && dataPoint.y() <= maxNorthing) {
+                newDataPoints.add(dataPoint);
+            }
+        }
+        
+        return newDataPoints;
+    }
+    
     /**
      * Turns a map of Datapoints, Double into a list of new Datapoints.
      */
