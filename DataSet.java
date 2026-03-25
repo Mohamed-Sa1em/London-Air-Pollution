@@ -10,7 +10,7 @@ import java.util.*;
  * of data points.
  * 
  * @author Michael Kölling
- * @version 1.0
+ * @version 1.0     
  */
 public class DataSet
 {
@@ -96,21 +96,6 @@ public class DataSet
                                toInt(values[1]), 
                                toInt(values[2]), 
                                toDouble(values[3]))); 
-    }
-    
-    public List<DataPoint> returnRelevantData() {
-        ArrayList<DataPoint> relevantDataPoints = new ArrayList<DataPoint>();
-        for (DataPoint dataPoint: data) {
-            double This_Easting = dataPoint.x();
-            double This_Northing = dataPoint.y();
-            if (This_Easting >= Min_Easting && This_Easting <= Max_Easting &&
-                This_Northing >= Min_Northing && This_Northing <= Max_Northing
-            ) {
-                relevantDataPoints.add(dataPoint);
-            }
-        }
-        
-        return relevantDataPoints;
     }
     
     /**

@@ -17,13 +17,15 @@ import javafx.concurrent.Task;
 
 
 /**
- * Write a description of JavaFX class MainWindow here.
+ * The MainWindow class hosts the functionality of the main window that is presented
+ * to the user. 
  *
- * @author (your name)
- * @version (a version number or a date)
+ * @author Zubair Abdual Matin
+ * @version 1.0
  */
 public class MainWindow extends Application
 {
+    // instance variables
     private MapController map = new MapController();
     private WelcomeWindow welcome = new WelcomeWindow();
     private StatsWindow stats = new StatsWindow();
@@ -67,11 +69,14 @@ public class MainWindow extends Application
         stage.show();
     }
 
-
+    /**
+     * Creates the menu bar
+     */
     private HBox createMenuBar(BorderPane root) throws Exception, java.io.FileNotFoundException {
         HBox topBar = new HBox(10);
         topBar.getStyleClass().add("nav-bar");
         
+        // logo
         Image image = new Image("file:assets/Logo2.png");
         ImageView imageView = new ImageView(image);
         imageView.setPreserveRatio(true);
@@ -81,10 +86,12 @@ public class MainWindow extends Application
         Region spacing = new Region();
         topBar.setHgrow(spacing, Priority.ALWAYS);
         
+        // the welcome button
         Button welcomeWindowButton = new Button("Welcome");
         welcomeWindowButton.setOnAction(event -> {welcomeButtonPressed(event, root);});
         welcomeWindowButton.getStyleClass().add("nav-bar-button");
 
+        // the data map button
         Button dataMapButton = new Button("Data Map");
         
         dataMapButton.setOnAction(event -> {
@@ -95,6 +102,7 @@ public class MainWindow extends Application
         dataMapButton.setMinWidth(dataMapButton.getPrefWidth());
         dataMapButton.getStyleClass().add("nav-bar-button");
 
+        // the pollution stats button
         Button pollutionStatsButton = new Button("Pollution Stats");
         pollutionStatsButton.setOnAction(event -> {statsButtonPressed(event, root);});
         pollutionStatsButton.getStyleClass().add("nav-bar-button");
@@ -104,6 +112,9 @@ public class MainWindow extends Application
         return topBar;
     }
 
+    /**
+     * Creates the filter and control bar, visible when in Data Map screen
+     */
     private VBox createFiltersAndControlsBar() throws Exception {
         VBox filtersBar = new VBox(20);
         filtersBar.getStyleClass().add("filters");
@@ -151,7 +162,7 @@ public class MainWindow extends Application
         
         pollutionLevelSelectorComboBox.getSelectionModel().selectFirst();
         
-        
+        // labels for the API integration
         Label liveMapSelectionLabel = new Label("Live Maps:");
         
         Button pollutionLiveButton = new Button("Pollution");
@@ -220,6 +231,9 @@ public class MainWindow extends Application
         return filtersBar;
     }
     
+    /**
+     * Handles the actions that occur when users select values from the combo box 
+     */
     private void setupComboBoxEvent(ComboBox yearSelectorComboBox, ComboBox pollutantSelectorComboBox, ComboBox pollutionLevelSelectorComboBox) {
         yearSelectorComboBox.setOnAction(event -> {
             try{ comboBoxSelection(yearSelectorComboBox, pollutantSelectorComboBox, pollutionLevelSelectorComboBox); }
@@ -237,11 +251,17 @@ public class MainWindow extends Application
         });
     }
     
+    /**
+     * Triggers the welcome screen
+     */
     private void welcomeButtonPressed(ActionEvent event, BorderPane root) {
         root.setCenter(welcome);
         root.setLeft(null);
     }
     
+    /**
+     * Triggers the data map screen
+     */
     private void dataMapButtonPressed(ActionEvent event, BorderPane root) throws Exception {
         root.setCenter(map);
         root.setLeft(createFiltersAndControlsBar());
@@ -250,6 +270,9 @@ public class MainWindow extends Application
         map.plotData(no2Data, "All");
     }
     
+    /**
+     * Swtiches between the different interactive maps
+     */
     private void swapMapButton(ActionEvent event, BorderPane root, String text){
         if (text.equals("Weather")) {
             liveMap = new InteractiveMap("Weather");
@@ -259,11 +282,17 @@ public class MainWindow extends Application
         root.setCenter(liveMap);
     }
     
+    /**
+     * Triggers the statistics screen
+     */
     private void statsButtonPressed(ActionEvent event, BorderPane root) {
         root.setCenter(stats);
         root.setLeft(null);
     }
     
+    /**
+     * Updates the map according to the values in the combobox
+     */
     private void comboBoxSelection(
         ComboBox<String> yearSelectorComboBox, ComboBox<String> pollutantSelectorComboBox, 
         ComboBox<String> pollutionLevelComboBox

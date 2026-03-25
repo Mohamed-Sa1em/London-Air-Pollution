@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * users to see graphs of the data and see trends over time.
  *
  * @author Salaah Shameem
- * @version 1.1
+ * @version 1.2
  */
 public class StatsWindow extends BorderPane
 {
@@ -27,9 +27,7 @@ public class StatsWindow extends BorderPane
     private Graph pm25Graph;
     private Graph pm10Graph;
     private Graph allGraph;
-    
-    private Graph random;
-    
+        
     /**
      * Constructor for an object of StatsWindow
      */
@@ -40,14 +38,6 @@ public class StatsWindow extends BorderPane
         
         this.setLeft(createSelectionBar());
         avgPollutantScreen();
-    }
-    
-    /**
-     * Place holder text
-     */
-    private Label createEmpty() {
-        Label label = new Label("Hello world");
-        return label;
     }
     
     /**
@@ -73,6 +63,7 @@ public class StatsWindow extends BorderPane
         trendsOverTime.setOnAction(this::trendOverTimeScreen);
         trendsOverTime.getStyleClass().add("stats-button");
         
+        // toggle group
         ToggleGroup group = new ToggleGroup();
         averagePollutantLevel.setToggleGroup(group);
         highestPollutantLevel.setToggleGroup(group);
@@ -95,7 +86,7 @@ public class StatsWindow extends BorderPane
         Label coulumnTitleLabel = new Label("Select the Pollutant, starting Year and ending Year \n (The years MUST be different)");
         coulumnTitleLabel.setFont(Font.font("Arial",FontWeight.BOLD, 20));
         
-        // for the year-selection side of the screen
+        // for the year-selection boxes
         
         HBox yearBar = new HBox(100);
         yearBar.setAlignment(Pos.CENTER);
@@ -271,7 +262,7 @@ public class StatsWindow extends BorderPane
     }
     
     /**
-     * Draws a graph for a pollutant for a range of years.
+     * Works out the average pollutant values for the map area and displays it.
      */
     private void findAverageValues(ComboBox<String> pollutant, ComboBox<String> start, ComboBox<String> end) {
         String selectedPollutant = pollutant.getValue();
@@ -282,9 +273,9 @@ public class StatsWindow extends BorderPane
         if (Integer.valueOf(startYear) >= Integer.valueOf(endYear)) {
             Alert incorrectDateAlert = new Alert(Alert.AlertType.ERROR);
             incorrectDateAlert.setContentText("Date range selected is not valid");
-            
             incorrectDateAlert.showAndWait();
-            this.avgPollutantScreen();
+            
+            this.avgPollutantScreen(); // allows the user to choose again
             return;
         }
         

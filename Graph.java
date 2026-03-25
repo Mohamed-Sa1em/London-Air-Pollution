@@ -14,7 +14,7 @@ public class Graph
 {
     private Calculation calc;
     
-    // private attributes 
+    // private attributes
     private NumberAxis xAxis;
     private NumberAxis yAxis;
     private LineChart<Number, Number> lineChart;
@@ -113,7 +113,7 @@ public class Graph
     }
     
     /**
-     * @return the linechart
+     * Returns the linechart
      */
     public LineChart<Number, Number> returnLineChart() {
         return lineChart;

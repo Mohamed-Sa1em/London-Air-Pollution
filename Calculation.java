@@ -4,7 +4,7 @@ import java.util.*;
  * Calculation class is used perform calculations for other classes to reduce redundant methods.
  *
  * @author Salaah Shameem
- * @version 1.0
+ * @version 1.1
  */
 public class Calculation
 {
@@ -40,7 +40,7 @@ public class Calculation
     public double findAverageFromSpecificYear(String pollutant, String year) {
         DataSet data = returnDataSet(pollutant, year);
         
-        List<DataPoint> relevantData = data.returnRelevantData();
+        List<DataPoint> relevantData = findRelevantData(data.getData());
         
         double average = findAverageFromData(relevantData);
         return average;
@@ -48,7 +48,7 @@ public class Calculation
     
     /**
      * Finds an average from a list of datapoints
-     * @return the average
+     * @return average
      */
     public double findAverageFromData(List<DataPoint> data) {
         double sum = 0;
@@ -59,6 +59,11 @@ public class Calculation
         return sum / data.size();
     }
     
+    /**
+     * Find the relevant datapoints from a list of existing datapoints
+     * @param datapoints the list of datapoints
+     * @return a list containing the relevant datapoints
+     */
     public List<DataPoint> findRelevantData(List<DataPoint> dataPoints) {
         int maxEasting = 553297;
         int minEasting = 510394;
@@ -68,7 +73,8 @@ public class Calculation
         List<DataPoint> newDataPoints = new ArrayList<DataPoint>();
         
         for (DataPoint dataPoint: dataPoints) {
-            if (dataPoint.x() >= minEasting && dataPoint.x() <= maxEasting && dataPoint.y() >= minNorthing && dataPoint.y() <= maxNorthing) {
+            if (dataPoint.x() >= minEasting && dataPoint.x() <= maxEasting && dataPoint.y() >= minNorthing 
+                && dataPoint.y() <= maxNorthing) {
                 newDataPoints.add(dataPoint);
             }
         }
@@ -77,7 +83,9 @@ public class Calculation
     }
     
     /**
-     * Turns a map of Datapoints, Double into a list of new Datapoints.
+     * Turns a map of <Datapoints, Double> into a list of new Datapoints.
+     * @param map a map of <DataPoint, Double>
+     * @return list containing new DataPoints
      */
     public List<DataPoint> returnNewDataPoints(Map<DataPoint, Double> map) {
         List<DataPoint> result = new ArrayList<>();
@@ -92,7 +100,7 @@ public class Calculation
     
     /**
      * Loads in the required file to retrieve the data points from it
-     * @return a list of datapoints from the file
+     * @return the dataset
      */
     private DataSet returnDataSet(String pollutant, String year){
         String folderName = pollutant.toUpperCase();
@@ -110,7 +118,9 @@ public class Calculation
     }
     
     /**
-     * @return maximum pollution value
+     * Returns the value of the maximum pollution level from a list of datapoints
+     * @param dataPoints list of datapoints
+     * @return maximum value
      */
     public double returnMaxLevelOfPollution(List<DataPoint> dataPoints) {
         double max = 0;
@@ -124,6 +134,7 @@ public class Calculation
     }
     
     /**
+     * Returns the datapoint of the location with the maximum value.
      * @return DataPoint of the max pollutant value
      */
     public DataPoint getLocationOfMaxValue(List<DataPoint> dataPoints) {
@@ -157,6 +168,7 @@ public class Calculation
     
     /**
      * Merges two maps based on their key's.
+     * @return a map that that has been merged from the two parameters maps
      */
     public Map<DataPoint, Double> mergeMaps(Map<Integer, DataPoint> gridToDataPoint, Map<Integer, Double[]> gridcodeAverage) {
         Map<DataPoint, Double> result = new HashMap<>();
@@ -186,7 +198,7 @@ public class Calculation
     
     /**
      * Finds a specific value from a data point
-     * @return the value.System.out.print
+     * @return value
      */
     public double findSpecificVal(List<DataPoint> dataPoints, double easting, double northing) {
         for (DataPoint dp: dataPoints) {

@@ -10,12 +10,12 @@ import javafx.application.Platform;
 import java.util.*;
 
 /**
- * MapController class is soley responsibly for rendering the map of london so far.
+ * MapController class is soley responsibly for rendering the map of London so far.
  * Eventually it will act as a canvas where we "allocate" and display the pollution data points 
  *
  *
- * @author The 4 Mohameds
- * @version 1.1
+ * @author Mohamed Salim
+ * @version 1.2
  */
 public class MapController extends Pane
 {
@@ -52,7 +52,11 @@ public class MapController extends Pane
         this.getChildren().add(mapBackground); //adds the image to the scrren 
     }
 
-
+    /**
+     * Plots the data from a given dataset
+     * @param dataSet the dataset 
+     * @param filterLevel this considers which category of pollutant level should be displayed
+     */
     public void plotData(DataSet dataSet, String filterLevel)
     {
         final double RangeX = Max_Easting - Min_Easting;
@@ -61,13 +65,13 @@ public class MapController extends Pane
         String currentPollutant = dataSet.getPollutant();
         String year = dataSet.getYear();
 
-        List<DataPoint> relevantDataPoints = dataSet.returnRelevantData();
+        List<DataPoint> relevantDataPoints = calculation.findRelevantData(dataSet.getData());
         relevantDataCalc(relevantDataPoints, currentPollutant, year, filterLevel);
     
     }
     
     /**
-     * Calculates relevant information about the datapoints and proceeds to display them on the map.findAverageFromRangeOfYears
+     * Calculates relevant information about the datapoints and proceeds to display them on the map
      */
     private void relevantDataCalc(List<DataPoint> relevantDataPoints, String currentPollutant, String year, String filterLevel) {
         double maxPollutionForThisData = calculation.returnMaxLevelOfPollution(relevantDataPoints);
@@ -82,7 +86,9 @@ public class MapController extends Pane
         }
     }
     
-    
+    /**
+     * Plots a single data point on the map
+     */
     private void showOneDataPoint(DataPoint dataPoint, PollutantThreshold thresholds, String currentPollutant, String year, String filterLevel) {
         double This_Easting = dataPoint.x();
         double This_Northing = dataPoint.y();
@@ -98,6 +104,7 @@ public class MapController extends Pane
         
         marker.setOpacity(baseOpacity);
             
+        // adds hovering functionality
         setupHoveringTool(dataPoint, currentPollutant, This_Value, year, marker, baseOpacity);
         
         if (filterLevel.equals("All") || filterLevel.equals(pointCategory)) {
@@ -105,13 +112,18 @@ public class MapController extends Pane
         }
     }
     
-    
+    /**
+     * Determines the thresholdvalues given the mean of the data and the actual thresholds
+     */
     private void setThresholdValues(double meanPollutionForThisData, PollutantThreshold thresholds) {
         thresholds.setGreenMax(meanPollutionForThisData * 0.9);
         thresholds.setYellowMax(meanPollutionForThisData);
         thresholds.setOrangeMax(meanPollutionForThisData * 1.1);
     }
     
+    /**
+     * Sets the colors of the datapoint markers and returns a relevant category for the pollutant level
+     */
     private String setMarkerColours(PollutantThreshold thresholds, Rectangle marker, double This_Value){
         if (This_Value < thresholds.getGreenMax()) {
             marker.setFill(Color.GREEN.darker());
@@ -156,12 +168,12 @@ public class MapController extends Pane
     }
     
     /**
-     * Used to show the highest level for a selected pollutant
+     * Used to show the highest level for a selected pollutant on the map
      */
     public void showHighestPollutant(String year, String pollutant) {
         DataSet data = getDataForYearAndPollutant(pollutant, year);
         
-        List<DataPoint> relevantDataPoints = data.returnRelevantData();
+        List<DataPoint> relevantDataPoints = calculation.findRelevantData(data.getData());
         double maxValue = calculation.returnMaxLevelOfPollution(relevantDataPoints);
         DataPoint location = calculation.getLocationOfMaxValue(relevantDataPoints);
         
@@ -169,7 +181,8 @@ public class MapController extends Pane
     }
     
     /**
-     * Finds the relevant datapoints for the area within the time period selected
+     * Shows the average pollutant levels for relevant datapoints for the area 
+     * within a specific time period
      */
     public void showAverageForTimePeriod(String pollutant, String start, String end) {
         List<String> years = new ArrayList<>(List.of("2018", "2019", "2020", "2021", "2022", "2023"));
@@ -179,7 +192,8 @@ public class MapController extends Pane
         Map<Integer, DataPoint> gridToDataPoint = new HashMap<>();
         
         for(String year: middleYears) {
-            List<DataPoint> dataPoints = getDataForYearAndPollutant(pollutant, year).returnRelevantData();
+            DataSet data = getDataForYearAndPollutant(pollutant, year);
+            List<DataPoint> dataPoints = calculation.findRelevantData(data.getData());
             for (DataPoint dp: dataPoints) {
                 int key = dp.gridCode();
                 gridToDataPoint.put(key, dp);
@@ -191,6 +205,7 @@ public class MapController extends Pane
         
         List<DataPoint> newDataPoints = calculation.returnNewDataPoints(averageMap);
         
+        // plots markers with specialised hovering tool text
         relevantDataCalc(newDataPoints, pollutant,  middleYears.get(0) + " to " + middleYears.get(middleYears.size()-1) , "All");
         
     }
@@ -220,6 +235,9 @@ public class MapController extends Pane
         this.getChildren().add(marker);
     }
     
+    /**
+     * Adds the hovering tool to each marker
+     */
     private void setupHoveringTool(DataPoint dataPoint, String currentPollutant, double This_Value, String year, Rectangle marker, double baseOpacity){
         //Hovering and value formatting
         String labelText = String.format("Grid Code: " + dataPoint.gridCode() + "\nx: " + dataPoint.x() + "\ny: " + dataPoint.y() + "\n" + year + "\n" + currentPollutant + " Level: %.2f", This_Value); 

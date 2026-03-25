@@ -15,13 +15,16 @@ import javafx.scene.image.ImageView;
 
 
 /**
- * Write a description of JavaFX class WelcomeWindow here.
+ * The WelcomeWindow class houses the code related to the welcome window screen
  *
- * @author (your name)
- * @version (a version number or a date)
+ * @author Mohammed Aziz
+ * @version 1.0
  */
 public class WelcomeWindow extends ScrollPane
 {
+    /**
+     * Constructor for WelcomeWindow
+     */
     public WelcomeWindow()
     {
         //super(root,width,height);
@@ -67,6 +70,6 @@ public class WelcomeWindow extends ScrollPane
         mapDetailsView.setPreserveRatio(true);
         
         content.getChildren().addAll(titleLabel,instructionLabel,navBarView,navInfo,lineBreak,dataMapTitle,dataMapInfo,dataMapView,mapDetailsInfo,mapDetailsView);
-        this.setContent(content);
+        this.setContent(content); // sets the content pane as the content
     }
 }

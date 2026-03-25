@@ -6,7 +6,8 @@ import java.util.List;
 /**
  * The test class CalculationTest.
  *
- 
+ * @author  Mohamed Salim
+ * @version 1.0
  */
 public class CalculationTest
 {
