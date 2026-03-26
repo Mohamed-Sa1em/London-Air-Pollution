@@ -5,7 +5,9 @@ import java.net.URL;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 /**
- * Write a description of class LiveData here.
+ * The LiveData class holds the key functionality for the API,
+ * especially the functionality that is common between different
+ * API calls such as the weather and pollution API.
  *
  * @author Zubair Abdul Matin
  * @version 1.0
@@ -20,6 +22,11 @@ public abstract class LiveData
     {
     }
     
+    /**
+     * Gets the parsed data from a specific URL
+     * @param url - the url used for the API
+     * @return array of all the parsed values
+     */
     protected double[] getParsedData(URL url) throws Exception, java.io.IOException {
 
         BufferedReader reader =
@@ -41,7 +48,16 @@ public abstract class LiveData
         return parsedValues;
     }
     
+    /**
+     * Returns the data specific to weather or pollution
+     * @return an array with the parsed values
+     */
     abstract public double[] parseData(String jsonString) throws Exception;
     
+    /**
+     * Finds the data at a given point.
+     * @param latitude, longitude
+     * @return data in string format
+     */
     abstract public String getDataAtPoint(double latitude, double longitude) throws Exception;
 }

@@ -6,7 +6,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Write a description of class WeatherAPI here.
+ * A class to call the API and return weather data.
+ * The class also parses the data and returns it in 
+ * String format.
  *
  * @author Zubair Abdul Matin
  * @version 1.0
@@ -38,6 +40,11 @@ public class WeatherAPI extends LiveData
         return parsedValues;
     }
     
+    /**
+    * Returns the data parsed into an array format
+    * @param jsonString - the string received from the API.
+    * @return an array with the weather values
+    */ 
     public double[] parseData(String jsonString) throws Exception {
 
         ObjectMapper mapper = new ObjectMapper();
@@ -56,6 +63,12 @@ public class WeatherAPI extends LiveData
         return new double[]{temperature, humidity, windSpeed};
     }
     
+    /**
+     * Gets the data in string format at a given point
+     * @param latitude - latitude of point on the map
+     * @param longitude - longitude of point on the map
+     * @return string format of data
+     */
     public String getDataAtPoint(double latitude, double longitude) throws Exception {
         double[] weatherValues = getAPIResponse(latitude, longitude);
         return ("Temp: " + weatherValues[0] + "<br>" + "Humidity: " + weatherValues[1] + "<br>" + "Wind: " + weatherValues[2]);

@@ -5,7 +5,9 @@ import java.net.URL;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 /**
- * Write a description of class PollutionApi here.
+ * A class to call the API and return pollution data.
+ * The class also parses the data and returns it in 
+ * String format.
  *
  * @author Zubair Abdul Matin
  * @version 1.0
@@ -31,6 +33,11 @@ public class PollutionAPI extends LiveData
         return parsedValues;
     }
     
+    /**
+    * Returns the data parsed into an array format
+    * @param jsonString - the string received from the API.
+    * @return an array with the pollution values
+    */ 
     public double[] parseData(String jsonString) throws Exception {
 
         ObjectMapper mapper = new ObjectMapper();
@@ -51,6 +58,12 @@ public class PollutionAPI extends LiveData
         return new double[]{pm25, pm10, no2};
     }
     
+    /**
+     * Gets the data in string format at a given point
+     * @param latitude - latitude of point on the map
+     * @param longitude - longitude of point on the map
+     * @return string format of data
+     */
     public String getDataAtPoint(double latitude, double longitude) throws Exception {
         double[] pollutionValues = getAPIResponse(latitude, longitude);
         return ("PM2.5: " + pollutionValues[0] + "<br>" + "PM10: " + pollutionValues[1] + "<br>" + "NO2: " + pollutionValues[2]);

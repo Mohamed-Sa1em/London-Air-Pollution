@@ -5,7 +5,9 @@ import javafx.scene.*;
 import java.awt.event.ActionEvent;
 
 /**
- * Write a description of class InteractiveMap here.
+ * A class to display an interactive map of the
+ * entire world that can be zoomed in to, zoomed out of
+ * and clicked on for information. Made using mapjfx.
  *
  * @author Mohammed Aziz
  * @version 1.0
@@ -17,7 +19,10 @@ public class InteractiveMap extends StackPane {
     private LiveData liveData;
     private String info;
     
-    
+    /**
+     * Class to create the interactive map and
+     * set initial coordinates to London coordinates
+     */
     public InteractiveMap(String mapType) { 
         mapView = new MapView();
         chooseMap(mapType);
