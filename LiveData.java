@@ -36,8 +36,6 @@ public abstract class LiveData
         
         String jsonString = result.toString();
         
-        System.out.println(jsonString);
-        
         double[] parsedValues = parseData(jsonString);
         
         return parsedValues;

@@ -61,12 +61,6 @@ public class MainWindow extends Application
         Font.loadFont(getClass().getResourceAsStream("/assets/Roboto-Condensed.ttf"), 10);
         Font.loadFont(getClass().getResourceAsStream("/assets/Roboto-BoldCondensed.ttf"), 10);
         
-        for (String name : Font.getFontNames()) {
-            if (name.contains("Roboto")) {
-                System.out.println(name);
-            }
-        }
-
         stage.setResizable(false); // makes the window non resizeable by the user
         stage.setTitle("Air Pollution Monitor");
         stage.setScene(scene);
