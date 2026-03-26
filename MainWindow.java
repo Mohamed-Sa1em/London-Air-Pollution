@@ -134,7 +134,7 @@ public class MainWindow extends Application
             "2022",
             "2023");
 
-        yearSelectorComboBox.getSelectionModel().selectLast();
+        yearSelectorComboBox.getSelectionModel().selectFirst();
 
 
         Label pollutantSelectionLabel = new Label("Select Pollutant");
