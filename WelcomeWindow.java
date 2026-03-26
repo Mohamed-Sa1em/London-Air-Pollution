@@ -18,18 +18,11 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
 
 /**
-<<<<<<< HEAD
- * The WelcomeWindow class houses the code related to the welcome window screen
- *
- * @author Mohammed Aziz
- * @version 1.0
-=======
  * WelcomeWindow is a ScrollPane that displays all the information for the user to navigate
  * the application.
  *
  * @author Mohammed Aziz
  * @version 1.5
->>>>>>> Styling
  */
 public class WelcomeWindow extends ScrollPane
 {
@@ -99,6 +92,10 @@ public class WelcomeWindow extends ScrollPane
         return heroSection;
     }
     
+    /**
+     * The description of the data map section on the welcome page.
+     * @return VBox
+     */
     private VBox dataMap(){
         VBox dataInfo = new VBox(25);
         dataInfo.getStyleClass().add("welcome-contents");
@@ -179,6 +176,10 @@ public class WelcomeWindow extends ScrollPane
         return dataInfo;
     }
     
+    /**
+     * The description of the Statistics Page on the welcome page.
+     * @return VBox
+     */
     private VBox statsPage() {
         VBox statsInfo = new VBox();
         statsInfo.getStyleClass().add("welcome-contents");
@@ -190,7 +191,16 @@ public class WelcomeWindow extends ScrollPane
         "The stats page aggregates data from the static map and retrieves useful trends/graphs.");
         statsDetails.getStyleClass().add("welcome-body");
         
-        statsInfo.getChildren().addAll(statsTitle,statsDetails);
+        Image statsPage = new Image("file:assets/statsPage.png");
+        ImageView statsPageView = new ImageView(statsPage);
+        statsPageView.setFitWidth(800);
+        statsPageView.setPreserveRatio(true);
+        
+        Label statsPageDetails = new Label(
+        "The stats page can be navigated using the left hand side, for different metrics.");
+        statsPageDetails.getStyleClass().add("welcome-body");
+        
+        statsInfo.getChildren().addAll(statsTitle,statsDetails,statsPageView,statsPageDetails);
         return statsInfo;
     }
 }
