@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -25,6 +24,9 @@ public class WeatherAPI extends LiveData
         
     }
     
+    /**
+     * Creates URl and gets the data form the API
+     */
     private double[] getAPIResponse(double lat, double lon) throws Exception {
         String urlString =
         "https://api.openweathermap.org/data/2.5/weather"
@@ -42,21 +44,21 @@ public class WeatherAPI extends LiveData
     
     /**
     * Returns the data parsed into an array format
+    * 
     * @param jsonString - the string received from the API.
     * @return an array with the weather values
     */ 
     public double[] parseData(String jsonString) throws Exception {
-
         ObjectMapper mapper = new ObjectMapper();
     
         JsonNode root = mapper.readTree(jsonString);
     
-        // main
+        // Main branch API JSON format
         JsonNode main = root.get("main");
         double temperature = main.get("temp").asDouble();
         double humidity = main.get("humidity").asDouble();
     
-        // wind
+        // Wind branch API JSON format
         JsonNode wind = root.get("wind");
         double windSpeed = wind.get("speed").asDouble();
         
@@ -65,6 +67,7 @@ public class WeatherAPI extends LiveData
     
     /**
      * Gets the data in string format at a given point
+     * 
      * @param latitude - latitude of point on the map
      * @param longitude - longitude of point on the map
      * @return string format of data

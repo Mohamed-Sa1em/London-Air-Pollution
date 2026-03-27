@@ -32,28 +32,29 @@ public class MapController extends Pane
     private final double RangeY = Max_Northing - Min_Northing;
 
     /**
-     * Constructor for objects of class MapController#
+     * Constructor for objects of class MapController
      * makes a map pane and loads the image
      */
     public MapController()
     {
-        //loading the image
+        // Loading the image
         Image mapImage = new Image("file:assets/London.png");
         mapBackground = new ImageView(mapImage);
         calculation = new Calculation();
 
-        //scaling the image to set the window 
+        // Scaling the image to set the window 
         mapBackground.setFitWidth(1088);
 
-        //preserve the image from distortion
+        // Preserve the image from distortion
         mapBackground.setPreserveRatio(true); 
-        mapBackground.setSmooth(true); //"crisper image "
+        mapBackground.setSmooth(true); // Crisper image 
 
-        this.getChildren().add(mapBackground); //adds the image to the scrren 
+        this.getChildren().add(mapBackground); // Adds the image to the scrren 
     }
 
     /**
      * Plots the data from a given dataset
+     * 
      * @param dataSet the dataset 
      * @param filterLevel this considers which category of pollutant level should be displayed
      */
@@ -104,7 +105,7 @@ public class MapController extends Pane
         
         marker.setOpacity(baseOpacity);
             
-        // adds hovering functionality
+        // Adds hovering functionality
         setupHoveringTool(dataPoint, currentPollutant, This_Value, year, marker, baseOpacity);
         
         if (filterLevel.equals("All") || filterLevel.equals(pointCategory)) {
@@ -145,7 +146,6 @@ public class MapController extends Pane
      * Then updates the map 
      */
     public void updateMapData(String pollutant, String year, String filterLevel) {
-
         String folderName = pollutant.toUpperCase();
         String filePrefix = pollutant.replace(".", "").toLowerCase();
         
@@ -205,7 +205,7 @@ public class MapController extends Pane
         
         List<DataPoint> newDataPoints = calculation.returnNewDataPoints(averageMap);
         
-        // plots markers with specialised hovering tool text
+        // Plots markers with specialised hovering tool text
         relevantDataCalc(newDataPoints, pollutant,  middleYears.get(0) + " to " + middleYears.get(middleYears.size()-1) , "All");
         
     }
@@ -239,7 +239,7 @@ public class MapController extends Pane
      * Adds the hovering tool to each marker
      */
     private void setupHoveringTool(DataPoint dataPoint, String currentPollutant, double This_Value, String year, Rectangle marker, double baseOpacity){
-        //Hovering and value formatting
+        // Hovering and value formatting
         String labelText = String.format("Grid Code: " + dataPoint.gridCode() + "\nx: " + dataPoint.x() + "\ny: " + dataPoint.y() + "\n" + year + "\n" + currentPollutant + " Level: %.2f", This_Value); 
         Tooltip infoPopup = new Tooltip(labelText);
         infoPopup.setShowDelay(Duration.ZERO);

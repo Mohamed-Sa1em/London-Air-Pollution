@@ -3,7 +3,6 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import java.util.HashMap;
 import java.util.Set;
-
 /**
  * The Graph class is used to create graphs for the relevant data and display within the Statistic Page.
  *
@@ -14,7 +13,7 @@ public class Graph
 {
     private Calculation calc;
     
-    // private attributes
+    // Private attributes
     private NumberAxis xAxis;
     private NumberAxis yAxis;
     private LineChart<Number, Number> lineChart;
@@ -22,13 +21,12 @@ public class Graph
     
     private String pollutant;
 
-    // attributes that may be needed for three line graphs together  
+    // Attributes that may be needed for three line graphs together  
     private XYChart.Series<Number, Number> series2;
     private XYChart.Series<Number, Number> series3;
 
     private String pollutant2;
     private String pollutant3;
-
 
     /**
      * Constructor for objects of class Graph with only one pollutant

@@ -14,8 +14,6 @@ import javafx.scene.text.Font;
 import javafx.geometry.Insets;
 import java.awt.event.ActionListener;
 import javafx.concurrent.Task;
-
-
 /**
  * The MainWindow class hosts the functionality of the main window that is presented
  * to the user. 
@@ -25,14 +23,13 @@ import javafx.concurrent.Task;
  */
 public class MainWindow extends Application
 {
-    // instance variables
+    // Instance variables
     private MapController map = new MapController();
     private WelcomeWindow welcome = new WelcomeWindow();
     private StatsWindow stats = new StatsWindow();
     private InteractiveMap liveMap;
     private boolean staticMap = true;
     private BorderPane root = new BorderPane();
-    
     /**
      * The start method is the main entry point for every JavaFX application. 
      * It is called after the init() method has returned and after 
@@ -41,16 +38,15 @@ public class MainWindow extends Application
      * @param  stage the primary stage for this application.
      */
     @Override
-
     public void start(Stage stage) throws Exception,java.io.FileNotFoundException
 
     {
         root.setBorder(new Border(
                 new BorderStroke(
-                    Color.BLACK,               // border color
-                    BorderStrokeStyle.SOLID,   // line style
+                    Color.BLACK,               // Border colour
+                    BorderStrokeStyle.SOLID,   // Line style
                     null,
-                    new BorderWidths(3)        // thickness
+                    new BorderWidths(3)        // Thickness
                 )
             ));
         root.setTop(createMenuBar(root));
@@ -88,12 +84,12 @@ public class MainWindow extends Application
         Region spacing = new Region();
         topBar.setHgrow(spacing, Priority.ALWAYS);
         
-        // the welcome button
+        // The welcome button
         Button welcomeWindowButton = new Button("Welcome");
         welcomeWindowButton.setOnAction(event -> {welcomeButtonPressed(event, root);});
         welcomeWindowButton.getStyleClass().add("nav-bar-button");
 
-        // the data map button
+        // The data map button
         Button dataMapButton = new Button("Data Map");
         
         dataMapButton.setOnAction(event -> {
@@ -103,7 +99,7 @@ public class MainWindow extends Application
         dataMapButton.setMinWidth(dataMapButton.getPrefWidth());
         dataMapButton.getStyleClass().add("nav-bar-button");
 
-        // the pollution stats button
+        // The pollution stats button
         Button pollutionStatsButton = new Button("Pollution Stats");
         pollutionStatsButton.setOnAction(event -> {statsButtonPressed(event, root);});
         pollutionStatsButton.getStyleClass().add("nav-bar-button");
@@ -120,10 +116,12 @@ public class MainWindow extends Application
         VBox filtersBar = new VBox(20);
         filtersBar.getStyleClass().add("filters");
         
+        // Labels
         Label filtersAndControlsLabel = new Label ("Filters and Controls");
         filtersAndControlsLabel.getStyleClass().add("bar-title");
         Label selectYearLabel = new Label("Select Year");
 
+        // YearSelector
         ComboBox<String> yearSelectorComboBox = new ComboBox<>();
 
         yearSelectorComboBox.getItems().addAll(
@@ -136,7 +134,8 @@ public class MainWindow extends Application
 
         yearSelectorComboBox.getSelectionModel().selectFirst();
 
-
+        
+        // PollutantSelector
         Label pollutantSelectionLabel = new Label("Select Pollutant");
 
         ComboBox<String>  pollutantSelectorComboBox = new ComboBox<>();
@@ -149,7 +148,7 @@ public class MainWindow extends Application
         );
         pollutantSelectorComboBox.getSelectionModel().selectFirst();
         
-        
+        // PollutionLevelSelector
         Label pollutionLevelSelectionLabel = new Label("Select Level");
 
         ComboBox<String>  pollutionLevelSelectorComboBox = new ComboBox<>();
@@ -163,10 +162,12 @@ public class MainWindow extends Application
         
         pollutionLevelSelectorComboBox.getSelectionModel().selectFirst();
         
-        // labels for the API integration
+        // Labels for the API integration
         Label liveMapSelectionLabel = new Label("Live Maps:");
         
         Button pollutionLiveButton = new Button("Pollution");
+        
+        // Button Action
         pollutionLiveButton.setOnAction(event -> {
             String text = pollutionLiveButton.getText();
             swapMapButton(event, root, text);
@@ -182,7 +183,6 @@ public class MainWindow extends Application
 
         //Handles the change of the year and the pollutant
         //Loading the new dataset
-
         setupComboBoxEvent(yearSelectorComboBox, pollutantSelectorComboBox, pollutionLevelSelectorComboBox);
 
         yearSelectorComboBox.setOnAction(event -> {

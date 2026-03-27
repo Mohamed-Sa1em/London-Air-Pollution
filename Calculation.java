@@ -1,5 +1,4 @@
 import java.util.*;
-
 /**
  * Calculation class is used perform calculations for other classes to reduce redundant methods.
  *
@@ -8,7 +7,7 @@ import java.util.*;
  */
 public class Calculation
 {
-    // an ArrayList with all the years that the data spans for
+    // An ArrayList with all the years that the data spans for
     private ArrayList<String> years = new ArrayList<>(List.of("2018", "2019", "2020", "2021", "2022", "2023"));
 
     /**
@@ -20,6 +19,7 @@ public class Calculation
 
     /**
      * Finds an average for a pollutant from all years
+     * 
      * @return a hashmap with year as key and the average as the value.
      */
     public HashMap<String, Double> findAverageFromAllYears(String pollutant)
@@ -35,6 +35,7 @@ public class Calculation
     
     /**
      * Finds an average for a pollutant from a specific year.
+     * 
      * @return average
      */
     public double findAverageFromSpecificYear(String pollutant, String year) {
@@ -48,6 +49,7 @@ public class Calculation
     
     /**
      * Finds an average from a list of datapoints
+     * 
      * @return average
      */
     public double findAverageFromData(List<DataPoint> data) {
@@ -55,12 +57,12 @@ public class Calculation
         for (DataPoint dataPoint: data) {
             sum += dataPoint.value();
         }
-        
         return sum / data.size();
     }
     
     /**
      * Find the relevant datapoints from a list of existing datapoints
+     * 
      * @param datapoints the list of datapoints
      * @return a list containing the relevant datapoints
      */
@@ -78,12 +80,12 @@ public class Calculation
                 newDataPoints.add(dataPoint);
             }
         }
-        
         return newDataPoints;
     }
     
     /**
      * Turns a map of <Datapoints, Double> into a list of new Datapoints.
+     * 
      * @param map a map of <DataPoint, Double>
      * @return list containing new DataPoints
      */
@@ -94,12 +96,12 @@ public class Calculation
         for (DataPoint dp: datapoints) {
             result.add(new DataPoint(dp.gridCode(), dp.x(), dp.y(), map.get(dp)));
         }
-        
         return result;
     }
     
     /**
      * Loads in the required file to retrieve the data points from it
+     * 
      * @return the dataset
      */
     private DataSet returnDataSet(String pollutant, String year){
@@ -119,6 +121,7 @@ public class Calculation
     
     /**
      * Returns the value of the maximum pollution level from a list of datapoints
+     * 
      * @param dataPoints list of datapoints
      * @return maximum value
      */
@@ -129,12 +132,12 @@ public class Calculation
                 max = dataPoint.value();
             }
         }
-        
         return max;
     }
     
     /**
      * Returns the datapoint of the location with the maximum value.
+     * 
      * @return DataPoint of the max pollutant value
      */
     public DataPoint getLocationOfMaxValue(List<DataPoint> dataPoints) {
@@ -146,7 +149,6 @@ public class Calculation
                 loc = dataPoint;
             }
         }
-        
         return loc;
     }
     
@@ -168,6 +170,7 @@ public class Calculation
     
     /**
      * Merges two maps based on their key's.
+     * 
      * @return a map that that has been merged from the two parameters maps
      */
     public Map<DataPoint, Double> mergeMaps(Map<Integer, DataPoint> gridToDataPoint, Map<Integer, Double[]> gridcodeAverage) {
@@ -182,12 +185,12 @@ public class Calculation
                 result.put(dp, calculatedAverage);
             }
         }
-        
         return result;
     }
     
     /**
      * Breaks the year range to return a sublist
+     * 
      * @return a sublist of years
      */
     private List<String> findMiddleYears(String start, String end) {
@@ -198,6 +201,7 @@ public class Calculation
     
     /**
      * Finds a specific value from a data point
+     * 
      * @return value
      */
     public double findSpecificVal(List<DataPoint> dataPoints, double easting, double northing) {

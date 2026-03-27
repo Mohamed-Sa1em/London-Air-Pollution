@@ -1,6 +1,5 @@
 import java.io.*;
 import java.net.*;
-
 /**
  * This class loads a UK DEFRA air pollution file from disk and returns the file data
  * in an object. 
@@ -26,20 +25,20 @@ public class DataLoader
         
         URL url = getClass().getResource(fileName);
         try (BufferedReader br = new BufferedReader(new FileReader(new File(url.toURI()).getAbsolutePath()))) {
-            // the first four lines of the file hold special information; read them in:
+            // The first four lines of the file hold special information; read them in:
             String pollutant = readDataHeader(br);
             String year = readDataHeader(br);
             String metric = readDataHeader(br);
             String units = readDataHeader(br);
             
-            // discard the next two lines. the first is empty, and the next holds 
-            // the column labels for the data points.
+            // Discard the next two lines. the first is empty, and the next holds 
+            // The column labels for the data points.
             br.readLine();
             br.readLine();
 
             DataSet dataSet = new DataSet(pollutant, year, metric, units);
             
-            // read all the data lines
+            // Read all the data lines
             String line;
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(COMMA_DELIMITER);
@@ -71,5 +70,4 @@ public class DataLoader
         String[] values = line.split(COMMA_DELIMITER);
         return values[0];
     }
-
 }

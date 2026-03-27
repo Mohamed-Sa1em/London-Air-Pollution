@@ -1,5 +1,4 @@
 import java.util.*;
-
 /**
  * A DataSet object holds all the data from a pollution data file.
  * 
@@ -100,6 +99,7 @@ public class DataSet
     
     /**
      * Convert a string to int. 
+     * 
      * @param intString  The String holding the int value
      * @return  The int value, or -1 if the string is not a readable number
      */
@@ -115,6 +115,7 @@ public class DataSet
 
     /**
      * Convert a string to double. 
+     * 
      * @param doubleString  The String holding the double value
      * @return  The double value, or -1.0 if the string is not a readable number
      */

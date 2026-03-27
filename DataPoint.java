@@ -1,4 +1,3 @@
-
 /**
  * Objects of class DataPoint hold one data point in the dataset. A data point
  * is a single value for one geographic location.

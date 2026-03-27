@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 /**
@@ -24,6 +23,7 @@ public abstract class LiveData
     
     /**
      * Gets the parsed data from a specific URL
+     * 
      * @param url - the url used for the API
      * @return array of all the parsed values
      */
@@ -50,12 +50,14 @@ public abstract class LiveData
     
     /**
      * Returns the data specific to weather or pollution
+     * 
      * @return an array with the parsed values
      */
     abstract public double[] parseData(String jsonString) throws Exception;
     
     /**
      * Finds the data at a given point.
+     * 
      * @param latitude, longitude
      * @return data in string format
      */

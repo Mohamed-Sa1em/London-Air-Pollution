@@ -16,7 +16,6 @@ import javafx.scene.paint.LinearGradient;
 import javafx.geometry.*;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
-
 /**
  * WelcomeWindow is a ScrollPane that displays all the information for the user to navigate
  * the application.
@@ -57,6 +56,7 @@ public class WelcomeWindow extends ScrollPane
     
     /**
      * The title image and text at the top of the welcome page.
+     * 
      * @return StackPane
      */
     private StackPane heroHeader(){
@@ -178,6 +178,7 @@ public class WelcomeWindow extends ScrollPane
     
     /**
      * The description of the Statistics Page on the welcome page.
+     * 
      * @return VBox
      */
     private VBox statsPage() {

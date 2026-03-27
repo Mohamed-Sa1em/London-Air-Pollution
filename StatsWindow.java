@@ -11,7 +11,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.*;
 import java.util.ArrayList;
-
 /**
  * StatsWindow class houses all the statistical functionality of the program, allowing 
  * users to see graphs of the data and see trends over time.
@@ -21,15 +20,15 @@ import java.util.ArrayList;
  */
 public class StatsWindow extends BorderPane
 {
-    // the map used in the stats window
+    // The map used in the stats window
     private MapController map;
     
-    // the main graphs 
+    // The main graphs 
     private Graph no2Graph;
     private Graph pm25Graph;
     private Graph pm10Graph;
     private Graph allGraph;
-        
+    
     /**
      * Constructor for an object of StatsWindow
      */
@@ -43,6 +42,7 @@ public class StatsWindow extends BorderPane
     
     /**
      * Creates the button for the user to select the wanted functionality
+     * 
      * @return VBox
      */
     private VBox createSelectionBar() {
@@ -340,7 +340,7 @@ public class StatsWindow extends BorderPane
         String startYear = start.getValue();
         String endYear = end.getValue();
         
-        // checks if the date range selected is valid
+        // Checks if the date range selected is valid
         if (Integer.valueOf(startYear) >= Integer.valueOf(endYear)) {
             Alert incorrectDateAlert = new Alert(Alert.AlertType.ERROR);
             incorrectDateAlert.setContentText("Date range selected is not valid");

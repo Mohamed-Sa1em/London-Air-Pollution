@@ -1,4 +1,3 @@
-
 /**
  * Enumeration class PollutantThreshold - holds the values for the pollutant thresholds
  *
@@ -7,7 +6,7 @@
  */
 public enum PollutantThreshold
 {
-    // instance variables
+    // Instance variables
     
     NO2(0, 0, 0),
     PM10(0, 0, 0),   

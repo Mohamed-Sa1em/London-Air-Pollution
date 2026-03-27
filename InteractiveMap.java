@@ -3,7 +3,6 @@ import com.sothawo.mapjfx.event.MapViewEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.*;
 import java.awt.event.ActionEvent;
-
 /**
  * A class to display an interactive map of the
  * entire world that can be zoomed in to, zoomed out of
@@ -43,6 +42,9 @@ public class InteractiveMap extends StackPane {
         mapView.initialize(Configuration.builder().showZoomControls(true).build());
     }
     
+    /**
+     * Allows the users to choose between Weather and Pollution.
+     */
     private void chooseMap(String mapType) {
         if (mapType.equals("Weather")) {
             liveData = new WeatherAPI();
@@ -51,6 +53,9 @@ public class InteractiveMap extends StackPane {
         }
     }
     
+    /**
+     * Initialises the Map to london
+     */
     private void initialiseMap(Coordinate londonCenter) {
         clickedMark = Marker.createProvided(Marker.Provided.RED);
         clickedMark.setPosition(londonCenter);
@@ -62,6 +67,9 @@ public class InteractiveMap extends StackPane {
         mapView.addLabel(clickedLabel);
     }
     
+    /**
+     * Handles the User Clicks
+     */
     private void mapClickedEvent (MapViewEvent event) {
         Coordinate clickedCoord = event.getCoordinate();
         clickedMark.setPosition(clickedCoord);
@@ -81,6 +89,9 @@ public class InteractiveMap extends StackPane {
         mapView.addLabel(clickedLabel);
     }
     
+    /**
+     * Prevents the World Rotating aorund its axis causing an Api error
+     */
     private double normalizeLongitude(double lon) {
         // This formula wraps the number so it always stays between -180 and 180
         double n = (lon + 180.0) % 360.0;

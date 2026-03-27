@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 /**
@@ -16,8 +15,14 @@ public class PollutionAPI extends LiveData
 {
     private static final String API_KEY = "8ba6990fa2a1c29023afcbc72b7e9969";
     
+    /**
+     * Constructor for objects of class PollutionAPI
+     */
     public PollutionAPI() {}
-
+    
+    /**
+     *  Creates URl and gets the data form the API
+     */
     private double[] getAPIResponse(double lat, double lon) throws Exception {
 
         String urlString =
@@ -35,6 +40,7 @@ public class PollutionAPI extends LiveData
     
     /**
     * Returns the data parsed into an array format
+    * 
     * @param jsonString - the string received from the API.
     * @return an array with the pollution values
     */ 
@@ -60,6 +66,7 @@ public class PollutionAPI extends LiveData
     
     /**
      * Gets the data in string format at a given point
+     * 
      * @param latitude - latitude of point on the map
      * @param longitude - longitude of point on the map
      * @return string format of data
